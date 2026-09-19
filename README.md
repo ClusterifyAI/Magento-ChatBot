@@ -30,7 +30,15 @@ The **Clusterify.AI ChatBot & Assistant** extension seamlessly bridges your Mage
 
 ---
 
-## 2. Safety First: Default Configuration & Security Standards
+## 2. Companion Documentation & Guides
+
+- **[`CLI.md`](./CLI.md)**: Full command-line reference and examples for `clusterify:chatbot:config:*` and `clusterify:chatbot:sync:*`.
+- **[`SYNC.md`](./SYNC.md)**: In-depth technical architecture, process flow, and extendability guide for URL knowledge base synchronization.
+- **[`CLOUD-COMPATIBILITY.md`](./CLOUD-COMPATIBILITY.md)**: Adobe Commerce (Enterprise) & Cloud (ECE) compatibility guide covering Content Staging (`row_id`), Multi-Source Inventory (MSI), and read-only filesystems.
+
+---
+
+## 3. Safety First: Default Configuration & Security Standards
 
 The extension is designed with a **strict "safe-by-default" security and stability model**:
 
@@ -45,7 +53,7 @@ The extension is designed with a **strict "safe-by-default" security and stabili
 
 ---
 
-## 3. Configuration Guide
+## 4. Configuration Guide
 
 In the Magento Admin Panel, navigate to:
 **Stores &gt; Settings &gt; Configuration &gt; Clusterify.AI &gt; ChatBot & Assistant**
@@ -143,7 +151,7 @@ The extension installs a dedicated **`clusterify_chatbot_knowledge`** attribute 
 
 ---
 
-## 4. Admin Monitoring Dashboard (*CHATBOT > Dashboard & Status*)
+## 5. Admin Monitoring Dashboard (*CHATBOT > Dashboard & Status*)
 
 In the Magento Admin Panel, click the **CHATBOT** primary sidebar menu item (featuring the prominent speech-bubble brand icon) and select **Dashboard & Status** (also accessible via *Marketing > Chatbot & Assistant > Dashboard & Status*):
 - **Live Subscription & Plan Verification**: Displays real-time plan detection (`STARTER Plan`, `PROFESSIONAL Plan`), plan ID, and dynamic upgrade callouts to the billing portal.
@@ -155,7 +163,7 @@ In the Magento Admin Panel, click the **CHATBOT** primary sidebar menu item (fea
 
 ---
 
-## 5. Technical Architecture & PHP SDK Integration
+## 6. Technical Architecture & PHP SDK Integration
 
 ### Official PHP SDK (`clusterify/chatbot-sdk`)
 All programmatic communication with the Clusterify.AI platform is powered by the official enterprise-grade PHP SDK:
@@ -185,15 +193,6 @@ Rather than hardcoding page paths, the module injects Magento's core `Magento\Fr
   3. `$config->getPublicUuid($storeId)` !== ''
   4. `$pageVisibilityService->isPageAllowed($fullActionName, $storeId, $handles)` === true
 - If any check fails, the block outputs an empty string, keeping your storefront HTML and DOM completely untouched.
-
----
-
-## 6. Companion Documentation & CLI Manuals
-
-- **[`CLI.md`](./CLI.md)**: Full command-line reference and examples for `clusterify:chatbot:config:*` and `clusterify:chatbot:sync:*`.
-- **[`SYNC.md`](./SYNC.md)**: In-depth technical architecture, process flow, and extendability guide for URL knowledge base synchronization.
-- **[`CLOUD-COMPATIBILITY.md`](./CLOUD-COMPATIBILITY.md)**: Adobe Commerce (Enterprise) & Cloud (ECE) compatibility guide covering Content Staging (`row_id`), Multi-Source Inventory (MSI), and read-only filesystems.
-- **[`AGENTS-DEV.md`](./AGENTS-DEV.md)**: AI agent technical rules, XML configuration paths, and component specs.
 
 ---
 
