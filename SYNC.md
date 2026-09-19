@@ -136,34 +136,34 @@ The synchronization system dynamically handles all three entity lifecycle events
 ### 2. Via CLI Commands
 ```bash
 # 1. View Sync Configuration, Indexer Status, and live Clusterify API Quota
-make magento ARGS="clusterify:chatbot:sync:status"
+bin/magento clusterify:chatbot:sync:status
 
 # 2. Trigger Full Reindex / Sync for all entities (queues to RabbitMQ)
-make magento ARGS="clusterify:chatbot:sync:run"
+bin/magento clusterify:chatbot:sync:run
 
 # 3. Trigger Selective Sync for specific entities
-make magento ARGS="clusterify:chatbot:sync:run --entity=cms"
-make magento ARGS="clusterify:chatbot:sync:run --entity=category"
-make magento ARGS="clusterify:chatbot:sync:run --entity=product"
+bin/magento clusterify:chatbot:sync:run --entity=cms
+bin/magento clusterify:chatbot:sync:run --entity=category
+bin/magento clusterify:chatbot:sync:run --entity=product
 
 # 4. Preview extracted Markdown locally without queueing or API calls
-make magento ARGS="clusterify:chatbot:sync:run --entity=product --dry-run"
+bin/magento clusterify:chatbot:sync:run --entity=product --dry-run
 
 # 5. Process and drain pending queue tasks immediately (clean exit upon completion)
-make magento ARGS="clusterify:chatbot:sync:consume"
-make magento ARGS="clusterify:chatbot:sync:consume --entity=product --limit=100"
+bin/magento clusterify:chatbot:sync:consume
+bin/magento clusterify:chatbot:sync:consume --entity=product --limit=100
 ```
 
 ### 3. Queue Consumer Execution Options
 Pending RabbitMQ tasks can be processed via:
 1. **Automated Magento Cron**: Runs `clusterify_chatbot_sync_process_queue` every minute (`* * * * * bin/magento cron:run`).
-2. **Dedicated CLI Command**: `make magento ARGS="clusterify:chatbot:sync:consume"`.
+2. **Dedicated CLI Command**: `bin/magento clusterify:chatbot:sync:consume`.
 3. **On-Demand Admin Dashboard Button**: **⚡ Process Pending Tasks Now**.
 4. **Persistent Daemon Workers** (for high-volume sites with supervisor/systemd):
    ```bash
-   make magento ARGS="queue:consumers:start clusterify.chatbot.sync.cms"
-   make magento ARGS="queue:consumers:start clusterify.chatbot.sync.category"
-   make magento ARGS="queue:consumers:start clusterify.chatbot.sync.product"
+   bin/magento queue:consumers:start clusterify.chatbot.sync.cms
+   bin/magento queue:consumers:start clusterify.chatbot.sync.category
+   bin/magento queue:consumers:start clusterify.chatbot.sync.product
    ```
 
 ---

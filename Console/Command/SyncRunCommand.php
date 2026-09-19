@@ -116,7 +116,7 @@ class SyncRunCommand extends Command
 
         if (!$this->config->isSyncEnabled()) {
             $output->writeln('<comment>[NOTICE] URL Knowledge Base synchronization is currently disabled in configuration (sync_enabled = 0).</comment>');
-            $output->writeln('Enable it via: make magento ARGS="clusterify:chatbot:config:set sync_enabled 1"');
+            $output->writeln('Enable it via: bin/magento clusterify:chatbot:config:set sync_enabled 1');
             return Cli::RETURN_FAILURE;
         }
 
@@ -180,15 +180,18 @@ class SyncRunCommand extends Command
                 $output->writeln('  - <comment>clusterify.chatbot.sync.product</comment>');
             }
             $output->writeln('');
-            $output->writeln('To manually run the consumers now, execute:');
+            $output->writeln('To manually process and drain pending queue tasks, execute:');
+            $output->writeln('  <comment>bin/magento clusterify:chatbot:sync:consume</comment>');
+            $output->writeln('');
+            $output->writeln('Or run background queue consumers via:');
             if ($entity === 'all' || $entity === 'cms') {
-                $output->writeln('  <comment>make magento ARGS="queue:consumers:start clusterify.chatbot.sync.cms --max-messages=100"</comment>');
+                $output->writeln('  <comment>bin/magento queue:consumers:start clusterify.chatbot.sync.cms</comment>');
             }
             if ($entity === 'all' || $entity === 'category') {
-                $output->writeln('  <comment>make magento ARGS="queue:consumers:start clusterify.chatbot.sync.category --max-messages=100"</comment>');
+                $output->writeln('  <comment>bin/magento queue:consumers:start clusterify.chatbot.sync.category</comment>');
             }
             if ($entity === 'all' || $entity === 'product') {
-                $output->writeln('  <comment>make magento ARGS="queue:consumers:start clusterify.chatbot.sync.product --max-messages=100"</comment>');
+                $output->writeln('  <comment>bin/magento queue:consumers:start clusterify.chatbot.sync.product</comment>');
             }
             $output->writeln('');
 

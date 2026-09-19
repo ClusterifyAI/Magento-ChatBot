@@ -212,7 +212,7 @@ The extension is thoroughly validated by an automated PHPUnit 12 test suite ensu
 
 ### Running the Test Suite:
 ```bash
-make magento ARGS="vendor/bin/phpunit app/code/ClusterifyAI/ChatBot/Test/Unit/"
+vendor/bin/phpunit app/code/ClusterifyAI/ChatBot/Test/Unit/
 ```
 
 ---

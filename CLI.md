@@ -22,14 +22,11 @@ The `clusterify:chatbot:config:*` CLI suite allows developers, DevOps pipelines,
 
 ## 2. Execution Syntax
 
-In this local Docker environment, run commands through `make` or directly through the `./scripts/magento` wrapper:
+Execute commands from your Magento root directory using the standard Magento CLI tool:
 
 ```bash
-# Using Make
-make magento ARGS="clusterify:chatbot:config:<action> [arguments] [options]"
-
-# Direct Script Execution (No outer quotes required)
-./scripts/magento clusterify:chatbot:config:<action> [arguments] [options]
+bin/magento clusterify:chatbot:config:<action> [arguments] [options]
+bin/magento clusterify:chatbot:sync:<action> [arguments] [options]
 ```
 
 ---
@@ -49,19 +46,19 @@ Displays the current configuration values in a formatted table or JSON readout.
 #### Examples:
 ```bash
 # 1. View Default Global Configuration
-make magento ARGS="clusterify:chatbot:config:show"
+bin/magento clusterify:chatbot:config:show
 
 # 2. View Configuration for a specific Store View
-make magento ARGS="clusterify:chatbot:config:show --scope=store --scope-code=default"
+bin/magento clusterify:chatbot:config:show --scope=store --scope-code=default
 
 # 3. View Configuration for a specific Website
-make magento ARGS="clusterify:chatbot:config:show --scope=website --scope-code=base"
+bin/magento clusterify:chatbot:config:show --scope=website --scope-code=base
 
-# 4. JSON Output for AI Agent Automation
-make magento ARGS="clusterify:chatbot:config:show --format=json"
+# 4. JSON Output for CI/CD or Script Automation
+bin/magento clusterify:chatbot:config:show --format=json
 
 # 5. View with Unmasked API Secret Key
-make magento ARGS="clusterify:chatbot:config:show --show-secrets"
+bin/magento clusterify:chatbot:config:show --show-secrets
 ```
 
 ---
@@ -95,32 +92,32 @@ Updates a specific configuration field, validates the input format, encrypts sen
 #### Examples:
 ```bash
 # 1. Enable the Extension globally
-make magento ARGS="clusterify:chatbot:config:set enabled 1"
+bin/magento clusterify:chatbot:config:set enabled 1
 
 # 2. Enable Storefront Display
-make magento ARGS="clusterify:chatbot:config:set show_on_storefront 1"
+bin/magento clusterify:chatbot:config:set show_on_storefront 1
 
 # 3. Set the ChatBot Public UUID (Default Scope)
-make magento ARGS="clusterify:chatbot:config:set public_uuid <YOUR_CHATBOT_PUBLIC_UUID>"
+bin/magento clusterify:chatbot:config:set public_uuid <YOUR_CHATBOT_PUBLIC_UUID>
 
 # 4. Override Public UUID for a specific Store View (e.g. Spanish Storefront)
-make magento ARGS="clusterify:chatbot:config:set public_uuid <SPANISH_STORE_PUBLIC_UUID> --scope=store --scope-code=spanish"
+bin/magento clusterify:chatbot:config:set public_uuid <SPANISH_STORE_PUBLIC_UUID> --scope=store --scope-code=spanish
 
 # 5. Set API Authorization Keys
-make magento ARGS="clusterify:chatbot:config:set public_key <YOUR_API_PUBLIC_KEY>"
-make magento ARGS="clusterify:chatbot:config:set secret_key <YOUR_API_SECRET_KEY>"
+bin/magento clusterify:chatbot:config:set public_key <YOUR_API_PUBLIC_KEY>
+bin/magento clusterify:chatbot:config:set secret_key <YOUR_API_SECRET_KEY>
 
 # 6. Override API Base URL (Staging / Testing)
-make magento ARGS="clusterify:chatbot:config:set api_base_url https://api.clusterify.ai"
+bin/magento clusterify:chatbot:config:set api_base_url https://api.clusterify.ai
 
 # 7. Enable URL Knowledge Base Synchronization
-make magento ARGS="clusterify:chatbot:config:set sync_enabled 1"
+bin/magento clusterify:chatbot:config:set sync_enabled 1
 
 # 8. Configure Entity Sync Toggles
-make magento ARGS="clusterify:chatbot:config:set sync_cms 1"
-make magento ARGS="clusterify:chatbot:config:set sync_categories 1"
-make magento ARGS="clusterify:chatbot:config:set sync_products 1"
-make magento ARGS="clusterify:chatbot:config:set sync_in_stock_only 1"
+bin/magento clusterify:chatbot:config:set sync_cms 1
+bin/magento clusterify:chatbot:config:set sync_categories 1
+bin/magento clusterify:chatbot:config:set sync_products 1
+bin/magento clusterify:chatbot:config:set sync_in_stock_only 1
 ```
 
 ---
@@ -140,16 +137,16 @@ Tests network connectivity and authenticates credentials live against Clusterify
 #### Examples:
 ```bash
 # 1. Test connection using currently saved configuration
-make magento ARGS="clusterify:chatbot:config:test"
+bin/magento clusterify:chatbot:config:test
 
 # 2. Test connection for a specific Store View
-make magento ARGS="clusterify:chatbot:config:test --scope=store --scope-code=default"
+bin/magento clusterify:chatbot:config:test --scope=store --scope-code=default
 
 # 3. Test new credentials before saving to the database
-make magento ARGS="clusterify:chatbot:config:test --public-key=<YOUR_PUBLIC_KEY> --secret-key=<YOUR_SECRET_KEY>"
+bin/magento clusterify:chatbot:config:test --public-key=<YOUR_PUBLIC_KEY> --secret-key=<YOUR_SECRET_KEY>
 
 # 4. JSON output for CI/CD pipeline healthchecks
-make magento ARGS="clusterify:chatbot:config:test --format=json"
+bin/magento clusterify:chatbot:config:test --format=json
 ```
 
 ---
@@ -168,16 +165,16 @@ Lists all dynamically discovered page types across all installed modules, displa
 #### Examples:
 ```bash
 # 1. List all page types across all categories
-make magento ARGS="clusterify:chatbot:config:pagetype-visibility:list"
+bin/magento clusterify:chatbot:config:pagetype-visibility:list
 
 # 2. Filter page types matching "cart" or "checkout"
-make magento ARGS="clusterify:chatbot:config:pagetype-visibility:list --filter=cart"
+bin/magento clusterify:chatbot:config:pagetype-visibility:list --filter=cart
 
 # 3. View only Product & Catalog pages
-make magento ARGS="clusterify:chatbot:config:pagetype-visibility:list --category=product"
+bin/magento clusterify:chatbot:config:pagetype-visibility:list --category=product
 
 # 4. View Page Visibility for a specific Store View in JSON format
-make magento ARGS="clusterify:chatbot:config:pagetype-visibility:list --scope=store --scope-code=default --format=json"
+bin/magento clusterify:chatbot:config:pagetype-visibility:list --scope=store --scope-code=default --format=json
 ```
 
 ---
@@ -199,19 +196,19 @@ Enables or disables ChatBot widget visibility for a specific page type handle, a
 #### Examples:
 ```bash
 # 1. Enable ChatBot on the Shopping Cart page
-make magento ARGS="clusterify:chatbot:config:pagetype-visibility:set checkout_cart_index enable"
+bin/magento clusterify:chatbot:config:pagetype-visibility:set checkout_cart_index enable
 
 # 2. Disable ChatBot on Product Detail pages for a specific Store View
-make magento ARGS="clusterify:chatbot:config:pagetype-visibility:set catalog_product_view disable --scope=store --scope-code=default"
+bin/magento clusterify:chatbot:config:pagetype-visibility:set catalog_product_view disable --scope=store --scope-code=default
 
 # 3. Enable ChatBot across all Customer Account pages
-make magento ARGS="clusterify:chatbot:config:pagetype-visibility:set customer enable --by-category"
+bin/magento clusterify:chatbot:config:pagetype-visibility:set customer enable --by-category
 
 # 4. Disable ChatBot across all Cart & Checkout pages
-make magento ARGS="clusterify:chatbot:config:pagetype-visibility:set checkout disable --by-category"
+bin/magento clusterify:chatbot:config:pagetype-visibility:set checkout disable --by-category
 
 # 5. Disable on ALL pages simultaneously
-make magento ARGS="clusterify:chatbot:config:pagetype-visibility:set all disable"
+bin/magento clusterify:chatbot:config:pagetype-visibility:set all disable
 ```
 
 ---
@@ -228,13 +225,13 @@ Resets page visibility rules back to default safe behaviors (Cart & Checkout pag
 #### Examples:
 ```bash
 # 1. Reset all page types to defaults (Checkout OFF, others ON)
-make magento ARGS="clusterify:chatbot:config:pagetype-visibility:reset"
+bin/magento clusterify:chatbot:config:pagetype-visibility:reset
 
 # 2. Reset page types for a specific store view
-make magento ARGS="clusterify:chatbot:config:pagetype-visibility:reset --scope=store --scope-code=default"
+bin/magento clusterify:chatbot:config:pagetype-visibility:reset --scope=store --scope-code=default
 
 # 3. Clear store-level override completely so it inherits from Default Config
-make magento ARGS="clusterify:chatbot:config:pagetype-visibility:reset --scope=store --scope-code=default --clear-override"
+bin/magento clusterify:chatbot:config:pagetype-visibility:reset --scope=store --scope-code=default --clear-override
 ```
 
 ---
@@ -249,10 +246,10 @@ Displays active URL Knowledge Base synchronization settings, the state of the 3 
 #### Examples:
 ```bash
 # 1. View Sync Status & Quota in Formatted Table
-make magento ARGS="clusterify:chatbot:sync:status"
+bin/magento clusterify:chatbot:sync:status
 
-# 2. JSON Output for AI Agent Automation
-make magento ARGS="clusterify:chatbot:sync:status --format=json"
+# 2. JSON Output for Script Automation
+bin/magento clusterify:chatbot:sync:status --format=json
 ```
 
 ---
@@ -269,19 +266,19 @@ Triggers reindexing for CMS, Category, or Product sync indexers, publishing enti
 #### Examples:
 ```bash
 # 1. Queue all entities to RabbitMQ (CMS, Categories, and Products)
-make magento ARGS="clusterify:chatbot:sync:run"
+bin/magento clusterify:chatbot:sync:run
 
 # 2. Queue CMS Pages only
-make magento ARGS="clusterify:chatbot:sync:run --entity=cms"
+bin/magento clusterify:chatbot:sync:run --entity=cms
 
 # 3. Queue Products only
-make magento ARGS="clusterify:chatbot:sync:run --entity=product"
+bin/magento clusterify:chatbot:sync:run --entity=product
 
 # 4. Queue Categories only
-make magento ARGS="clusterify:chatbot:sync:run --entity=category"
+bin/magento clusterify:chatbot:sync:run --entity=category
 
 # 5. Preview extracted Markdown locally without queueing or API calls
-make magento ARGS="clusterify:chatbot:sync:run --entity=cms --dry-run"
+bin/magento clusterify:chatbot:sync:run --entity=cms --dry-run
 ```
 
 ---
@@ -297,13 +294,13 @@ Immediately processes and drains pending RabbitMQ tasks into Clusterify.AI, exit
 #### Examples:
 ```bash
 # 1. Drain up to 50 pending messages across all queues and exit
-make magento ARGS="clusterify:chatbot:sync:consume"
+bin/magento clusterify:chatbot:sync:consume
 
 # 2. Drain up to 100 messages from the Products queue specifically
-make magento ARGS="clusterify:chatbot:sync:consume --entity=product --limit=100"
+bin/magento clusterify:chatbot:sync:consume --entity=product --limit=100
 
 # 3. Drain pending CMS page tasks
-make magento ARGS="clusterify:chatbot:sync:consume --entity=cms"
+bin/magento clusterify:chatbot:sync:consume --entity=cms
 ```
 
 ---
@@ -314,33 +311,33 @@ You can process pending RabbitMQ synchronization tasks using any of the followin
 
 1. **Dedicated On-Demand CLI (Recommended for Development / Manual Runs)**:
    ```bash
-   make magento ARGS="clusterify:chatbot:sync:consume"
+   bin/magento clusterify:chatbot:sync:consume
    ```
 2. **Automated Magento Background Cron (Recommended for Production)**:
    Runs automatically every minute via Magento's standard cron runner:
    ```bash
-   make magento ARGS="cron:run"
+   bin/magento cron:run
    ```
    *(Executes the `clusterify_chatbot_sync_process_queue` job according to the batch size configured in Stores > Configuration).*
 3. **On-Demand Admin Button**:
    Click **⚡ Process Pending Tasks Now** on the Admin Status Dashboard (*CHATBOT > Dashboard & Status*).
 4. **Persistent Daemon Workers (Supervisor / Systemd)**:
    ```bash
-   make magento ARGS="queue:consumers:start clusterify.chatbot.sync.cms"
-   make magento ARGS="queue:consumers:start clusterify.chatbot.sync.category"
-   make magento ARGS="queue:consumers:start clusterify.chatbot.sync.product"
+   bin/magento queue:consumers:start clusterify.chatbot.sync.cms
+   bin/magento queue:consumers:start clusterify.chatbot.sync.category
+   bin/magento queue:consumers:start clusterify.chatbot.sync.product
    ```
 
 ---
 
-## 4. AI Agent Guidelines for CLI Automation
+## 4. Scripting & CI/CD Automation Guidelines
 
-When writing scripts or delegating tasks to AI agents:
+When writing deployment scripts, CI/CD pipelines, or automating configuration:
 
-1. **Prefer CLI over Admin GUI**: AI agents should use `make magento ARGS="clusterify:chatbot:config:..."` for all configuration changes.
+1. **Direct CLI Execution**: Execute `bin/magento clusterify:chatbot:config:...` from the Magento root directory.
 2. **Inspect with JSON**: Use `--format=json` to parse configuration and page visibility programmatically:
    ```bash
-   make magento ARGS="clusterify:chatbot:config:show --format=json"
+   bin/magento clusterify:chatbot:config:show --format=json
    ```
 3. **Verify Connection After Changing Keys**: Always verify API keys with `clusterify:chatbot:config:test` after running `config:set public_key` or `config:set secret_key`.
 4. **Scope Safety**: Always specify `--scope=store --scope-code=<code_or_id>` when setting values intended for a specific storefront.
