@@ -9,13 +9,13 @@
 [![Test Quality](https://img.shields.io/badge/suite-100%25%20passing%20%C2%B7%200%20warnings-success.svg)](Test/Unit/)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](composer.json)
 
-The official Magento 2 / Adobe Commerce integration for **[Clusterify.AI](https://clusterify.ai)**. Empower your online store with an intelligent, 24/7 AI shopping assistant that answers customer inquiries instantly, guides shoppers to relevant catalog products, and drives measurable conversion growth.
+The official Magento 2 / Adobe Commerce integration for **[Clusterify.AI](https://clusterify.ai)**. Empower your online store with an intelligent, 24/7 **[Clusterify Assistant](https://clusterify.ai/ai-assistant)** and **[Clusterify Chatbot](https://clusterify.ai/chatbot)** that answers customer inquiries instantly, guides shoppers to relevant catalog products, and drives measurable conversion growth.
 
 ---
 
 ## 1. What is This Extension & Who is It For?
 
-The **Clusterify.AI ChatBot & Assistant** extension seamlessly bridges your Magento storefront with Clusterify's cutting-edge conversational AI engine.
+The **Clusterify.AI ChatBot & Assistant** extension seamlessly bridges your Magento storefront with the **[Clusterify Chatbot](https://clusterify.ai/chatbot)** conversational engine and **[Clusterify Assistant](https://clusterify.ai/ai-assistant)** sales guidance platform.
 
 ### Who is It For?
 - **E-Commerce Store Owners & Merchants**: Looking to automate pre-sales consultations and customer care around the clock without hiring large support teams.
@@ -23,8 +23,8 @@ The **Clusterify.AI ChatBot & Assistant** extension seamlessly bridges your Mage
 - **Customer Support Teams**: Aiming to eliminate repetitive support tickets regarding order status, returns, sizing, and shipping policies.
 
 ### Key Business Benefits
-- **24/7 Intelligent Shopping Guidance**: Customers receive instant, conversational answers day or night.
-- **Conversion Rate Optimization**: Proactively answers pre-purchase questions and removes hesitation right on the product page.
+- **24/7 Intelligent Shopping Guidance**: Customers receive instant, conversational answers day or night powered by the **[Clusterify Assistant](https://clusterify.ai/ai-assistant)**.
+- **Conversion Rate Optimization**: Proactively answers pre-purchase questions and removes hesitation right on the product page using the **[Clusterify Chatbot](https://clusterify.ai/chatbot)**.
 - **Multilingual & Multi-Store Ready**: Operates across different Magento Websites and Store Views, allowing separate language models and configurations per storefront.
 - **Lightweight & High-Performance**: Loads asynchronously via a deferred script bundle (`clusterify-chatbot-react.bundle.min.js`), ensuring zero negative impact on Google Core Web Vitals or page load times.
 
@@ -70,7 +70,7 @@ In the top-left corner, you can switch between **Default Config**, specific **We
 ---
 
 ### Group 2: ChatBot/Assistant Public UUID
-- **ChatBot Public UUID**: Enter the unique Public UUID found in your [Clusterify.AI Dashboard &gt; Chatbot](https://dashboard.clusterify.ai/chatbot) page.
+- **ChatBot Public UUID**: Enter the unique Public UUID found in your [Clusterify.AI Dashboard &gt; Chatbot](https://dashboard.clusterify.ai/chatbot) page to connect your **[Clusterify Chatbot](https://clusterify.ai/chatbot)**.
 - **Automatic Storefront Embed Code (Information / Preview Only)**: An informative read-only code display showing the exact loader script generated for your Public UUID:
   ```html
   <!-- Clusterify.AI ChatBot Loader - START -->
@@ -106,7 +106,7 @@ In the top-left corner, you can switch between **Default Config**, specific **We
 ---
 
 ### Group 4: Clusterify.AI API Authorization
-*Required for merchants using the PROFESSIONAL Plan or higher to synchronize URL-based knowledge.*
+*Required for merchants using the PROFESSIONAL Plan or higher to synchronize URL-based knowledge alongside your storewide **[Chatbot Knowledge Base](https://clusterify.ai/general-knowledge-base)**.*
 - **Informative Plan Notice**: Highlights that deep URL-based knowledge base synchronization requires a **PROFESSIONAL Plan** or higher, while **STARTER Plan** customers enjoy full management directly in the [Clusterify.AI Dashboard](https://dashboard.clusterify.ai).
 - **API Public Key**: Your `pk_live_...` credential from [Clusterify Dashboard &gt; API Keys](https://dashboard.clusterify.ai/api-key).
 - **API Secret Key**: Your `sk_live_...` credential (encrypted in database).
@@ -116,8 +116,8 @@ In the top-left corner, you can switch between **Default Config**, specific **We
 ---
 
 ### Group 5: URL Knowledge Base Synchronization (Professional Plan)
-*Automatic, asynchronous background synchronization of storefront pages to Clusterify.AI's deep URL knowledge base via RabbitMQ.*
-- **Subscription Safeguard**: Synchronizing URL-based knowledge requires an active **PROFESSIONAL Plan** or higher (`plan_id >= 2`). If your account is on the **STARTER Plan** (`plan_id = 1`), an informative warning banner is displayed and all switches in this group are **locked and disabled** to prevent sync errors and conserve server resources.
+*Automatic, asynchronous background synchronization of storefront pages to Clusterify.AI's deep **[Chatbot/Assistant Page based Knowledge](https://clusterify.ai/page-knowledge-base)** via RabbitMQ.*
+- **Subscription Safeguard**: Synchronizing URL-based knowledge requires an active **PROFESSIONAL Plan** or higher. If your account is on the **STARTER Plan**, an informative warning banner is displayed and all switches in this group are **locked and disabled** to prevent sync errors and conserve server resources.
 - **Enable Knowledge Base Sync** *(Switch, Default: No)*: Master toggle for URL knowledge synchronization.
 - **Synchronize CMS Pages** *(Switch, Default: Yes)*: Automatically extracts active CMS pages (Policies, About Us, Customer Service, etc.), converts content to clean Markdown, and resolves canonical URLs without `.html` suffixes.
 - **Synchronize Category Pages** *(Switch, Default: Yes)*: Automatically syncs category descriptions and active subcategory hierarchies.
@@ -139,7 +139,7 @@ In the top-left corner, you can switch between **Default Config**, specific **We
 
 ### Group 6: Custom AI Knowledge Attributes (Products, Categories & CMS)
 
-The extension installs a dedicated **`clusterify_chatbot_knowledge`** attribute across catalog products, category pages, and CMS pages, enabling merchants to feed high-priority custom context directly into the AI knowledge base:
+The extension installs a dedicated **`clusterify_chatbot_knowledge`** attribute across catalog products, category pages, and CMS pages, enabling merchants to feed high-priority custom context directly into the **[Page based Knowledge](https://clusterify.ai/page-knowledge-base)**:
 
 - **Dedicated Attribute Group & Fieldset**: Displayed under a clean, collapsible **`Clusterify AI ChatBot`** section on the Product Edit, Category Edit, and CMS Page Edit screens.
 - **Generous 20,000 Characters Capacity**: Backed by MariaDB `TEXT` / `mediumtext` storage with client-side length validation (`max_text_length: 20000`).
@@ -153,12 +153,12 @@ The extension installs a dedicated **`clusterify_chatbot_knowledge`** attribute 
 
 ## 5. Admin Monitoring Dashboard (*CHATBOT > Dashboard & Status*)
 
-In the Magento Admin Panel, click the **CHATBOT** primary sidebar menu item (featuring the prominent speech-bubble brand icon) and select **Dashboard & Status** (also accessible via *Marketing > Chatbot & Assistant > Dashboard & Status*):
-- **Live Subscription & Plan Verification**: Displays real-time plan detection (`STARTER Plan`, `PROFESSIONAL Plan`), plan ID, and dynamic upgrade callouts to the billing portal.
+In the Magento Admin Panel, click the **CHATBOT** primary sidebar menu item (featuring the prominent speech-bubble brand icon) and select **Dashboard & Status** (also accessible via *Marketing > Chatbot & Assistant > Dashboard & Status*) to monitor your **[Clusterify Assistant](https://clusterify.ai/ai-assistant)**, track real-time queue tasks, and access direct shortcuts to **[Chatbot Window Styling](https://clusterify.ai/chatbot/window-styling)** and rich **[ChatBot Visual components](https://clusterify.ai/chatbot/visual-components)**:
+- **Live Subscription & Plan Verification**: Displays real-time plan detection (`STARTER Plan`, `PROFESSIONAL Plan`) and dynamic upgrade callouts to the billing portal.
 - **Key Metrics Overview**: Real-time cards for Storefront Assistant status, API connection state, live URL Knowledge Base quota (`37 / 1,000 URLs`), and page type visibility coverage.
 - **Live RabbitMQ Queue Monitor**: Real-time backlog tracking across `CMS Pages Queue`, `Categories Queue`, and `Products Queue`, showing pending tasks and active worker counts.
 - **"⚡ Process Pending Tasks Now" Button**: An on-demand AJAX action button directly above the RabbitMQ table that drains up to 50 pending messages per queue and live-updates the counts on screen without requiring terminal access or page reload.
-- **Direct Portal Links (`Clusterify.AI`)**: Submenu links directly to your Cloud Dashboard, Plan & Billing, ChatBot builder, and API Keys, each styled with an external link indicator icon (`↗`) and opening securely in a new browser tab.
+- **Direct Portal Links (`Clusterify.AI`)**: Submenu links directly to your Cloud Dashboard, [Chatbot Window Styling](https://clusterify.ai/chatbot/window-styling), [ChatBot Visual components](https://clusterify.ai/chatbot/visual-components), and API Keys, each styled with an external link indicator icon (`↗`) and opening securely in a new browser tab.
 - **Terminal Reference Card**: Quick copy-paste commands for running indexers, the new `clusterify:chatbot:sync:consume` command, and daemon workers.
 
 ---
@@ -166,7 +166,7 @@ In the Magento Admin Panel, click the **CHATBOT** primary sidebar menu item (fea
 ## 6. Technical Architecture & PHP SDK Integration
 
 ### Official PHP SDK (`clusterify/chatbot-sdk`)
-All programmatic communication with the Clusterify.AI platform is powered by the official enterprise-grade PHP SDK:
+All programmatic communication with the Clusterify.AI platform is powered by the official enterprise-grade PHP SDK, designed to feed structured e-commerce data into the **[Clusterify Chatbot](https://clusterify.ai/chatbot)** and **[Clusterify Assistant](https://clusterify.ai/ai-assistant)**:
 - **Package**: [`clusterify/chatbot-sdk`](https://packagist.org/packages/clusterify/chatbot-sdk)
 - **Repository**: [ClusterifyAI/php-clusterify-sdk](https://github.com/ClusterifyAI/php-clusterify-sdk)
 - **Standards**: Strictly typed PHP 8.2+, PSR-4, PSR-7, PSR-17, and PSR-18 compliance.
@@ -175,7 +175,7 @@ All programmatic communication with the Clusterify.AI platform is powered by the
 
 ### Decoupled Knowledge Base Sync Pipeline (RabbitMQ &amp; Indexers)
 To guarantee zero database locking during flash sales, automated imports, or peak shopping hours:
-- **Unified Short-Circuit Guard**: All indexers, queue consumers, observers, and CLI commands call `PlanService::canSyncEntity()` as their very first action. Local settings (`isEnabled`, `isSyncEnabled`, entity toggles, API keys) are checked first before any profile API call, guaranteeing zero database queries and zero network overhead when disabled or on Starter Plan (`plan_id = 1`).
+- **Unified Short-Circuit Guard**: All indexers, queue consumers, observers, and CLI commands call `PlanService::canSyncEntity()` as their very first action. Local settings (`isEnabled`, `isSyncEnabled`, entity toggles, API keys) are checked first before any profile API call, guaranteeing zero database queries and zero network overhead when disabled or on the Starter Plan.
 - **3 Dedicated Indexers**: `clusterify_chatbot_cms`, `clusterify_chatbot_category`, and `clusterify_chatbot_product` track entity changes via Mview changelog database triggers.
 - **Fast Non-Blocking Producers**: Indexers do not make external HTTP calls; they publish lightweight messages to RabbitMQ (`clusterify.chatbot.sync.*`) in batches of 100.
 - **Rate-Limit Aware Consumers**: Background consumers (`CmsConsumer`, `CategoryConsumer`, `ProductConsumer`) process messages with store emulation, apply a 300ms throttle delay, and retry automatically on HTTP 429 rate limits using the SDK's `$e->getRetryAfter()`.

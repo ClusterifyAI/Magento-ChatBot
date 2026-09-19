@@ -187,14 +187,14 @@ Pending RabbitMQ tasks can be processed via:
    `AbstractSyncConsumer` enforces a 300ms throttle delay between API dispatches to maintain a steady throughput well below the 120 req/min rate limit.
 3. **Dynamic Rate-Limit Backoff**:
    If the API responds with HTTP 429 (`RateLimitExceededException`), the consumer dynamically parses `$e->getRetryAfter()`, logs the event, pauses execution, and safely retries.
-4. **Plan ID 1 (Starter Plan) Safeguard**:
-   URL-Based Knowledge Base synchronization is strictly reserved for accounts on the **PROFESSIONAL Plan** or higher (`plan_id >= 2`). If the current account is on the **STARTER Plan** (`plan_id = 1`):
+4. **Starter Plan Safeguard**:
+   URL-Based Knowledge Base synchronization is strictly reserved for accounts on the **PROFESSIONAL Plan** or higher. If the current account is on the **STARTER Plan**:
    - In the Magento Admin Panel, all synchronization switches are forced to Disabled (`0`) and locked with a clear upgrade notice.
    - All 3 indexers (`Cms`, `Category`, `Product`) verify plan eligibility via `PlanService::isUrlKnowledgeAllowed()` and **exit immediately (`return;`)**, querying zero database tables and queueing zero messages to RabbitMQ.
    - The CLI command `clusterify:chatbot:sync:run` intercepts execution, outputs an upgrade notice with a direct link to `https://dashboard.clusterify.ai/billing`, and aborts without executing indexers.
    - To avoid redundant API requests, plan verification is cached for 10 minutes in Magento cache storage (`clusterify_plan_cache_<storeId>`).
-5. **Comprehensive Mview Changelog Subscriptions**:
-   `etc/mview.xml` subscribes not only to primary entity tables (`catalog_product_entity`, `catalog_category_entity`, `cms_page`), but also to all EAV tables (`_int`, `_decimal`, `_text`, `_varchar`) and inventory tables (`cataloginventory_stock_item`, `cataloginventory_stock_status`). This guarantees that mass attribute updates, price changes, and stock decrements are accurately logged into changelog tables.
+5. **Dual-Layer Change Tracking & Trigger Safety**:
+   `etc/mview.xml` subscribes strictly to base entity tables (`catalog_product_entity`, `catalog_category_entity`, `cms_page`) and inventory tables (`cataloginventory_stock_item`, `cataloginventory_stock_status`) using `entity_id` and `product_id`. Paired with commit observers (`ProductSaveObserver`, `CategorySaveObserver`, `CmsSaveObserver`) and `ProductActionPlugin`, this guarantees complete changelog capture without trigger compilation errors on Adobe Commerce Staging where EAV tables link via `row_id`.
 6. **Zero Web Traffic Impact**:
    Web workers serving store visitors never make external HTTP requests during customer checkout or browsing. Storefront environment emulation (`App\Emulation`) is only activated within background consumer workers.
 

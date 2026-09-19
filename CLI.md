@@ -260,7 +260,7 @@ make magento ARGS="clusterify:chatbot:sync:status --format=json"
 ### 8. `clusterify:chatbot:sync:run`
 
 Triggers reindexing for CMS, Category, or Product sync indexers, publishing entity messages into the RabbitMQ queue.  
-*Safety Guard*: If the current Clusterify account is on the **STARTER Plan** (`plan_id = 1`), this command immediately aborts with a link to the billing upgrade page to conserve resources.
+*Safety Guard*: If the current Clusterify account is on the **STARTER Plan**, this command immediately aborts with a link to the billing upgrade page to conserve resources.
 
 #### Options:
 - `--entity, -e`: Target entity to sync (`cms`, `category`, `product`, or `all` [default])
