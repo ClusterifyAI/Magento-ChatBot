@@ -1,0 +1,107 @@
+<?php
+/**
+ * Test Connection button template
+ *
+ * @category  ClusterifyAI
+ * @package   ClusterifyAI_ChatBot
+ * @author    Clusterify AI <support@clusterify.ai>
+ * @copyright Copyright (c) 2026 Clusterify AI (https://clusterify.ai)
+ * @license   MIT License
+ *
+ * @var \ClusterifyAI\ChatBot\Block\Adminhtml\System\Config\Form\Field\TestConnection $block
+ * @var \Magento\Framework\Escaper $escaper
+ */
+?>
+<div class="actions actions-test-connection" style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
+    <?= $block->getButtonHtml() ?>
+    <span id="clusterify_connection_spinner" style="display: none;">
+        <span class="spinner" style="display: inline-block; vertical-align: middle;"></span>
+        <span style="font-size: 12px; color: #64748b; margin-left: 5px;">
+            <?= $escaper->escapeHtml(__('Connecting to Clusterify.AI API...')) ?>
+        </span>
+    </span>
+</div>
+<div id="clusterify_connection_result" style="margin-top: 10px; display: none;"></div>
+
+<script type="text/javascript">
+require(['jquery'], function ($) {
+    'use strict';
+
+    $('#clusterify_test_connection_btn').on('click', function (e) {
+        e.preventDefault();
+
+        var $btn = $(this);
+        var $spinner = $('#clusterify_connection_spinner');
+        var $result = $('#clusterify_connection_result');
+
+        var publicKey = $('#clusterify_chatbot_authorization_public_key').val();
+        var secretKey = $('#clusterify_chatbot_authorization_secret_key').val();
+        var apiBaseUrl = $('#clusterify_chatbot_authorization_api_base_url').val();
+
+        $btn.prop('disabled', true).addClass('disabled');
+        $spinner.show();
+        $result.hide().empty();
+
+        $.ajax({
+            url: '<?= $escaper->escapeUrl($block->getAjaxUrl()) ?>',
+            type: 'POST',
+            dataType: 'json',
+            data: {
+                form_key: window.FORM_KEY,
+                public_key: publicKey,
+                secret_key: secretKey,
+                api_base_url: apiBaseUrl
+            },
+            success: function (response) {
+                var isSuccess = Boolean(response && response.success);
+                var messageClass = isSuccess ? 'message message-success success' : 'message message-error error';
+                var messageText = response && response.message ? response.message : '<?= $escaper->escapeJs(__('Unexpected response from server.')) ?>';
+
+                var $messages = $('<div class="messages" style="margin-top: 8px;"/>');
+                var $msgBox = $('<div class="' + messageClass + '"/>');
+                var $textContainer = $('<div style="word-break: break-word;"/>').text(messageText);
+
+                if (response && response.link_url && response.link_text) {
+                    var $link = $('<a>')
+                        .attr('href', response.link_url)
+                        .attr('target', '_blank')
+                        .attr('rel', 'noopener noreferrer')
+                        .css({
+                            'text-decoration': 'underline',
+                            'font-weight': 'bold',
+                            'color': 'inherit',
+                            'margin-left': '6px',
+                            'display': 'inline-block'
+                        })
+                        .text(response.link_text + ' \u2192');
+                    $textContainer.append(' ').append($link);
+                }
+
+                $msgBox.append($textContainer);
+                $messages.append($msgBox);
+                $result.empty().append($messages).slideDown(200);
+            },
+            error: function (xhr, status, error) {
+                var errorMsg = '<?= $escaper->escapeJs(__('HTTP Error: Unable to complete test request.')) ?>';
+                if (xhr.responseJSON && xhr.responseJSON.message) {
+                    errorMsg = xhr.responseJSON.message;
+                } else if (error) {
+                    errorMsg += ' (' + error + ')';
+                }
+
+                var $messages = $('<div class="messages" style="margin-top: 8px;"/>');
+                var $msgBox = $('<div class="message message-error error"/>');
+                var $textContainer = $('<div style="word-break: break-word;"/>').text(errorMsg);
+
+                $msgBox.append($textContainer);
+                $messages.append($msgBox);
+                $result.empty().append($messages).slideDown(200);
+            },
+            complete: function () {
+                $btn.prop('disabled', false).removeClass('disabled');
+                $spinner.hide();
+            }
+        });
+    });
+});
+</script>

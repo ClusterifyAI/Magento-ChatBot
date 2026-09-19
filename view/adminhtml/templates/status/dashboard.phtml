@@ -1,0 +1,446 @@
+<?php
+/**
+ * ClusterifyAI ChatBot admin status dashboard template
+ *
+ * @category  ClusterifyAI
+ * @package   ClusterifyAI_ChatBot
+ * @author    Clusterify AI <support@clusterify.ai>
+ * @copyright Copyright (c) 2026 Clusterify AI (https://clusterify.ai)
+ * @license   MIT License
+ *
+ * @var \ClusterifyAI\ChatBot\Block\Adminhtml\Status\Dashboard $block
+ * @var \Magento\Framework\Escaper $escaper
+ */
+
+$planData = $block->getPlanData();
+$planId = $block->getPlanId();
+$planName = $block->getPlanName();
+$isAllowed = $block->isUrlKnowledgeAllowed();
+$quotaStats = $block->getQuotaStats();
+$syncSettings = $block->getSyncSettings();
+$visibility = $block->getPageVisibilitySummary();
+$hasCredentials = $block->hasApiCredentials();
+$indexers = $block->getIndexerStatusList();
+$queues = $block->getQueueStatusList();
+?>
+<style type="text/css">
+.clusterify-status-dashboard a[target='_blank']:after {
+    content: '\e644';
+    font-family: 'Admin Icons';
+    font-style: normal;
+    font-weight: normal;
+    font-size: 1.1rem;
+    vertical-align: middle;
+    margin-left: 6px;
+    display: inline-block;
+    line-height: 1;
+    speak: none;
+    opacity: 0.85;
+}
+.clusterify-status-dashboard a.action-primary[target='_blank']:after {
+    color: #ffffff;
+    opacity: 1;
+}
+</style>
+<div class="clusterify-status-dashboard" style="max-width: 1200px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; color: #1e293b;">
+
+    <!-- Top Action Bar -->
+    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; margin-bottom: 20px; padding-bottom: 15px; border-bottom: 1px solid #e2e8f0;">
+        <div>
+            <h2 style="margin: 0; font-size: 20px; font-weight: 700; color: #0f172a; display: flex; align-items: center; gap: 8px;">
+                <?= $escaper->escapeHtml(__('Clusterify.AI ChatBot & Assistant Dashboard')) ?>
+                <span style="background: #e0f2fe; color: #0369a1; font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 10px;">
+                    v<?= $escaper->escapeHtml($block->getExtensionVersion()) ?>
+                </span>
+            </h2>
+            <div style="font-size: 12px; color: #64748b; margin-top: 4px;">
+                <?= $escaper->escapeHtml(__('Real-time monitoring of AI chatbot status, subscription quota, and knowledge synchronization pipelines.')) ?>
+            </div>
+        </div>
+        <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+            <a href="<?= $escaper->escapeUrl($block->getConfigUrl()) ?>" class="action-secondary" style="font-size: 12px; padding: 6px 14px;">
+                <?= $escaper->escapeHtml(__('Configure Extension')) ?>
+            </a>
+            <a href="<?= $escaper->escapeUrl($block->getIndexManagementUrl()) ?>" class="action-secondary" style="font-size: 12px; padding: 6px 14px;">
+                <?= $escaper->escapeHtml(__('Index Management')) ?>
+            </a>
+            <a href="<?= $escaper->escapeUrl($block->getDashboardUrl()) ?>" target="_blank" rel="noopener noreferrer" class="action-primary" style="font-size: 12px; padding: 6px 14px;">
+                <?= $escaper->escapeHtml(__('Clusterify Dashboard')) ?>
+            </a>
+        </div>
+    </div>
+
+    <!-- Subscription & Plan Banner -->
+    <div style="margin-bottom: 24px;">
+        <?php if (!$hasCredentials): ?>
+            <!-- Scenario 1: Missing API Keys -->
+            <div style="background: #f8fafc; border: 1px solid #cbd5e1; border-left: 4px solid #64748b; border-radius: 6px; padding: 16px 20px;">
+                <div style="font-weight: 600; font-size: 14px; color: #1e293b; margin-bottom: 4px;">
+                    <?= $escaper->escapeHtml(__('API Credentials Required')) ?>
+                </div>
+                <div style="font-size: 12px; color: #64748b; line-height: 1.5;">
+                    <?= $escaper->escapeHtml(__('Configure your API Public Key and Secret Key in System Configuration to connect live profile metrics and activate URL Knowledge Base synchronization.')) ?>
+                </div>
+                <div style="margin-top: 10px;">
+                    <a href="<?= $escaper->escapeUrl($block->getConfigUrl()) ?>" style="font-size: 12px; font-weight: 600; color: #0284c7; text-decoration: underline;">
+                        <?= $escaper->escapeHtml(__('Configure API Credentials')) ?> &#8599;
+                    </a>
+                </div>
+            </div>
+        <?php elseif ($planData === null): ?>
+            <!-- Scenario 2: Credentials Present but API / Auth Failed -->
+            <div style="background: #fef2f2; border: 1px solid #fecaca; border-left: 4px solid #ef4444; border-radius: 6px; padding: 16px 20px;">
+                <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;">
+                    <div>
+                        <div style="font-weight: 700; font-size: 14px; color: #991b1b; margin-bottom: 4px;">
+                            <?= $escaper->escapeHtml(__('Unable to Connect to Clusterify.AI API')) ?>
+                        </div>
+                        <div style="font-size: 12px; line-height: 1.5; color: #7f1d1d;">
+                            <?= $escaper->escapeHtml(__('API credentials are configured, but the Clusterify API could not be authenticated or reached. Please verify your Public Key and Secret Key in System Configuration.')) ?>
+                        </div>
+                    </div>
+                    <a href="<?= $escaper->escapeUrl($block->getConfigUrl()) ?>" class="action-primary" style="background: #b91c1c; border-color: #991b1b; font-size: 12px; padding: 6px 14px;">
+                        <?= $escaper->escapeHtml(__('Verify API Keys')) ?> &#8599;
+                    </a>
+                </div>
+            </div>
+        <?php elseif (!$isAllowed || $planId === 1): ?>
+            <!-- Scenario 3: Authenticated Starter Plan -->
+            <div style="background: #f0f9ff; border: 1px solid #bae6fd; border-left: 4px solid #0284c7; border-radius: 6px; padding: 16px 20px;">
+                <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 12px;">
+                    <div style="flex: 1; min-width: 280px;">
+                        <div style="font-weight: 700; font-size: 14px; color: #0369a1; margin-bottom: 6px;">
+                            <?= $escaper->escapeHtml(__('Current Subscription: %1', $planName)) ?>
+                        </div>
+                        <div style="font-size: 12px; line-height: 1.6; color: #334155; margin-bottom: 6px;">
+                            <?= $escaper->escapeHtml(__('Your store is currently running on the STARTER Plan. Your floating chatbot assistant operates smoothly via your ChatBot Public UUID. To unlock deep URL-Based Knowledge Base synchronization for your catalog, automatic product updates, and category knowledge, upgrade anytime to the PROFESSIONAL Plan or MAGENTO Assistant Plan.')) ?>
+                        </div>
+                        <div style="font-size: 12px; color: #475569;">
+                            <?= $escaper->escapeHtml(__('Upgrade anytime on your')) ?>
+                            <a href="<?= $escaper->escapeUrl($block->getBillingUrl()) ?>" target="_blank" rel="noopener noreferrer" style="color: #0284c7; font-weight: bold; text-decoration: underline; margin-left: 4px;">
+                                <?= $escaper->escapeHtml(__('Clusterify.AI Profile & Billing Page')) ?>
+                            </a>
+                        </div>
+                    </div>
+                    <div>
+                        <a href="<?= $escaper->escapeUrl($block->getBillingUrl()) ?>" target="_blank" rel="noopener noreferrer" style="display: inline-flex; align-items: center; gap: 4px; color: #0284c7; font-size: 12px; font-weight: 700; text-decoration: underline; white-space: nowrap; padding: 6px 12px; background: #e0f2fe; border-radius: 4px;">
+                            <?= $escaper->escapeHtml(__('Upgrade to Professional Plan')) ?>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        <?php else: ?>
+            <!-- Scenario 4: Authenticated Professional / Higher Plan (No Billing Button needed) -->
+            <div style="background: #f0fdf4; border: 1px solid #bbf7d0; border-left: 4px solid #22c55e; border-radius: 6px; padding: 16px 20px;">
+                <div style="font-weight: 700; font-size: 14px; color: #166534; margin-bottom: 4px;">
+                    <?= $escaper->escapeHtml(__('Active Subscription: %1 (Supported)', $planName)) ?>
+                </div>
+                <div style="font-size: 12px; line-height: 1.5; color: #15803d;">
+                    <?= $escaper->escapeHtml(__('Your subscription plan permits deep URL-Based Knowledge Base synchronization. Changes to CMS, Category, and Product pages will sync automatically in the background via RabbitMQ.')) ?>
+                </div>
+            </div>
+        <?php endif; ?>
+    </div>
+
+    <!-- 4 Key Metrics Overview Cards -->
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; margin-bottom: 24px;">
+
+        <!-- Card 1: Storefront Widget -->
+        <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 6px; padding: 16px; box-shadow: 0 1px 2px rgba(0,0,0,0.03);">
+            <div style="font-size: 11px; text-transform: uppercase; font-weight: 700; color: #64748b; letter-spacing: 0.5px; margin-bottom: 8px;">
+                <?= $escaper->escapeHtml(__('Storefront Assistant')) ?>
+            </div>
+            <div style="font-size: 20px; font-weight: 700; color: #0f172a; margin-bottom: 6px;">
+                <?php if ($block->isExtensionEnabled() && $block->isShowOnStorefront()): ?>
+                    <span style="color: #16a34a;"><?= $escaper->escapeHtml(__('Active on Store')) ?></span>
+                <?php elseif ($block->isExtensionEnabled()): ?>
+                    <span style="color: #ca8a04;"><?= $escaper->escapeHtml(__('Backend Only')) ?></span>
+                <?php else: ?>
+                    <span style="color: #dc2626;"><?= $escaper->escapeHtml(__('Disabled')) ?></span>
+                <?php endif; ?>
+            </div>
+            <div style="font-size: 11px; font-family: monospace; color: #64748b; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+                <?= $escaper->escapeHtml(__('UUID: %1', $block->getPublicUuid() ?: __('(not set)'))) ?>
+            </div>
+        </div>
+
+        <!-- Card 2: API Connection -->
+        <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 6px; padding: 16px; box-shadow: 0 1px 2px rgba(0,0,0,0.03);">
+            <div style="font-size: 11px; text-transform: uppercase; font-weight: 700; color: #64748b; letter-spacing: 0.5px; margin-bottom: 8px;">
+                <?= $escaper->escapeHtml(__('API Authorization')) ?>
+            </div>
+            <div style="font-size: 20px; font-weight: 700; color: #0f172a; margin-bottom: 6px;">
+                <?php if ($hasCredentials && $planData !== null): ?>
+                    <span style="color: #16a34a;"><?= $escaper->escapeHtml(__('Connected')) ?></span>
+                <?php elseif ($hasCredentials): ?>
+                    <span style="color: #dc2626;"><?= $escaper->escapeHtml(__('Auth Error')) ?></span>
+                <?php else: ?>
+                    <span style="color: #64748b;"><?= $escaper->escapeHtml(__('Keys Missing')) ?></span>
+                <?php endif; ?>
+            </div>
+            <div style="font-size: 11px; color: #64748b; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+                <?= $escaper->escapeHtml(__('Endpoint: %1', parse_url($block->getApiBaseUrl(), PHP_URL_HOST) ?: $block->getApiBaseUrl())) ?>
+            </div>
+        </div>
+
+        <!-- Card 3: URL Knowledge Quota -->
+        <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 6px; padding: 16px; box-shadow: 0 1px 2px rgba(0,0,0,0.03);">
+            <div style="font-size: 11px; text-transform: uppercase; font-weight: 700; color: #64748b; letter-spacing: 0.5px; margin-bottom: 8px;">
+                <?= $escaper->escapeHtml(__('URL Knowledge Quota')) ?>
+            </div>
+            <div style="font-size: 20px; font-weight: 700; color: #0f172a; margin-bottom: 6px;">
+                <?php if ($quotaStats !== null): ?>
+                    <?= $escaper->escapeHtml(__('%1 / %2 URLs', (int) $quotaStats->total, (int) $quotaStats->maxUrls)) ?>
+                <?php elseif ($isAllowed): ?>
+                    <span style="color: #64748b; font-size: 14px;"><?= $escaper->escapeHtml(__('Quota Unavailable')) ?></span>
+                <?php else: ?>
+                    <span style="color: #64748b; font-size: 14px;"><?= $escaper->escapeHtml(__('Requires Professional')) ?></span>
+                <?php endif; ?>
+            </div>
+            <div style="font-size: 11px; color: #64748b;">
+                <?= $escaper->escapeHtml(__('Max length: 20,000 chars/URL')) ?>
+            </div>
+        </div>
+
+        <!-- Card 4: Storefront Page Appearance -->
+        <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 6px; padding: 16px; box-shadow: 0 1px 2px rgba(0,0,0,0.03);">
+            <div style="font-size: 11px; text-transform: uppercase; font-weight: 700; color: #64748b; letter-spacing: 0.5px; margin-bottom: 8px;">
+                <?= $escaper->escapeHtml(__('Storefront Page Appearance')) ?>
+            </div>
+            <div style="font-size: 20px; font-weight: 700; color: #0f172a; margin-bottom: 6px;">
+                <?= $escaper->escapeHtml(__('%1 / %2 Allowed Page Types', (int) $visibility['allowed'], (int) $visibility['total'])) ?>
+            </div>
+            <div style="font-size: 11px; color: #64748b;">
+                <?= $escaper->escapeHtml(__('ChatBot is permitted to appear on %1 of %2 storefront page types (Cart & Checkout pages protected).', (int) $visibility['allowed'], (int) $visibility['total'])) ?>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- URL Knowledge Base Synchronization Section -->
+    <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 6px; padding: 20px; margin-bottom: 24px; box-shadow: 0 1px 2px rgba(0,0,0,0.03);">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; border-bottom: 1px solid #f1f5f9; padding-bottom: 12px;">
+            <div>
+                <h3 style="margin: 0; font-size: 15px; font-weight: 700; color: #0f172a;">
+                    <?= $escaper->escapeHtml(__('URL Knowledge Base Synchronization Pipeline')) ?>
+                </h3>
+                <div style="font-size: 11px; color: #64748b; margin-top: 2px;">
+                    <?= $escaper->escapeHtml(__('Decoupled background indexers publishing to RabbitMQ queues with automated rate-limiting.')) ?>
+                </div>
+            </div>
+            <div>
+                <span style="font-size: 12px; font-weight: 600; padding: 4px 10px; border-radius: 12px; <?= $syncSettings['master'] ? 'background: #dcfce7; color: #166534;' : 'background: #f1f5f9; color: #64748b;' ?>">
+                    <?= $syncSettings['master'] ? $escaper->escapeHtml(__('Sync Enabled')) : $escaper->escapeHtml(__('Sync Disabled')) ?>
+                </span>
+            </div>
+        </div>
+
+        <!-- Indexers Status Table -->
+        <table class="data-table admin__table-primary" style="width: 100%; border-collapse: collapse; font-size: 12px;">
+            <thead>
+                <tr style="background: #f8fafc; text-align: left;">
+                    <th style="padding: 10px 12px; font-weight: 600; border-bottom: 1px solid #e2e8f0;"><?= $escaper->escapeHtml(__('Indexer Entity')) ?></th>
+                    <th style="padding: 10px 12px; font-weight: 600; border-bottom: 1px solid #e2e8f0;"><?= $escaper->escapeHtml(__('Indexer Code')) ?></th>
+                    <th style="padding: 10px 12px; font-weight: 600; border-bottom: 1px solid #e2e8f0;"><?= $escaper->escapeHtml(__('Status')) ?></th>
+                    <th style="padding: 10px 12px; font-weight: 600; border-bottom: 1px solid #e2e8f0;"><?= $escaper->escapeHtml(__('Execution Mode')) ?></th>
+                    <th style="padding: 10px 12px; font-weight: 600; border-bottom: 1px solid #e2e8f0;"><?= $escaper->escapeHtml(__('Sync Toggle')) ?></th>
+                    <th style="padding: 10px 12px; font-weight: 600; border-bottom: 1px solid #e2e8f0;"><?= $escaper->escapeHtml(__('Last Updated')) ?></th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php foreach ($indexers as $idx): ?>
+                    <?php
+                    $isEntitySyncOn = match ($idx['id']) {
+                        'clusterify_chatbot_cms' => $syncSettings['cms'],
+                        'clusterify_chatbot_category' => $syncSettings['category'],
+                        'clusterify_chatbot_product' => $syncSettings['product'],
+                        default => false,
+                    };
+                    ?>
+                    <tr style="border-bottom: 1px solid #f1f5f9;">
+                        <td style="padding: 12px; font-weight: 600; color: #1e293b;"><?= $escaper->escapeHtml($idx['title']) ?></td>
+                        <td style="padding: 12px; font-family: monospace; color: #64748b; font-size: 11px;"><?= $escaper->escapeHtml($idx['id']) ?></td>
+                        <td style="padding: 12px;">
+                            <span style="display: inline-block; padding: 2px 8px; border-radius: 10px; font-size: 11px; font-weight: 600; <?= $idx['is_valid'] ? 'background: #dcfce7; color: #166534;' : 'background: #fef08a; color: #854d0e;' ?>">
+                                <?= $escaper->escapeHtml($idx['status']) ?>
+                            </span>
+                        </td>
+                        <td style="padding: 12px; color: #475569;">
+                            <?= $idx['is_scheduled'] ? $escaper->escapeHtml(__('Schedule (Mview/Cron)')) : $escaper->escapeHtml(__('On Save')) ?>
+                        </td>
+                        <td style="padding: 12px;">
+                            <span style="display: inline-block; padding: 2px 8px; border-radius: 10px; font-size: 11px; font-weight: 600; <?= $isEntitySyncOn ? 'background: #e0f2fe; color: #0369a1;' : 'background: #f1f5f9; color: #64748b;' ?>">
+                                <?= $isEntitySyncOn ? $escaper->escapeHtml(__('Active')) : $escaper->escapeHtml(__('Inactive')) ?>
+                            </span>
+                        </td>
+                        <td style="padding: 12px; color: #64748b; font-size: 11px;">
+                            <?= $escaper->escapeHtml($idx['last_updated'] ?: __('Never')) ?>
+                        </td>
+                    </tr>
+                <?php endforeach; ?>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- RabbitMQ Queue Tasks & Backlog Block -->
+    <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 6px; padding: 20px; margin-bottom: 24px; box-shadow: 0 1px 2px rgba(0,0,0,0.03);">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; border-bottom: 1px solid #f1f5f9; padding-bottom: 12px; flex-wrap: wrap; gap: 10px;">
+            <div>
+                <h3 style="margin: 0; font-size: 15px; font-weight: 700; color: #0f172a;">
+                    <?= $escaper->escapeHtml(__('Background Queue Tasks (RabbitMQ)')) ?>
+                </h3>
+                <div style="font-size: 11px; color: #64748b; margin-top: 2px;">
+                    <?= $escaper->escapeHtml(__('Real-time count of pending entity synchronization tasks in RabbitMQ being processed into Clusterify AI\'s knowledge base.')) ?>
+                </div>
+            </div>
+            <div>
+                <button type="button" id="btn-process-queue" class="action-secondary" style="font-size: 12px; padding: 7px 16px; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; background: #0284c7; color: #ffffff; border-color: #0284c7;">
+                    ⚡ <?= $escaper->escapeHtml(__('Process Pending Tasks Now')) ?>
+                </button>
+            </div>
+        </div>
+
+        <div id="queue-process-feedback" style="display: none; margin-bottom: 14px; padding: 10px 14px; border-radius: 4px; font-size: 12px; font-weight: 500;"></div>
+
+        <table class="data-table admin__table-primary" style="width: 100%; border-collapse: collapse; font-size: 12px;">
+            <thead>
+                <tr style="background: #f8fafc; text-align: left;">
+                    <th style="padding: 10px 12px; font-weight: 600; border-bottom: 1px solid #e2e8f0;"><?= $escaper->escapeHtml(__('Queue Name')) ?></th>
+                    <th style="padding: 10px 12px; font-weight: 600; border-bottom: 1px solid #e2e8f0;"><?= $escaper->escapeHtml(__('Queue Code / Topic')) ?></th>
+                    <th style="padding: 10px 12px; font-weight: 600; border-bottom: 1px solid #e2e8f0;"><?= $escaper->escapeHtml(__('Pending Tasks (Messages)')) ?></th>
+                    <th style="padding: 10px 12px; font-weight: 600; border-bottom: 1px solid #e2e8f0;"><?= $escaper->escapeHtml(__('Active Consumers')) ?></th>
+                    <th style="padding: 10px 12px; font-weight: 600; border-bottom: 1px solid #e2e8f0;"><?= $escaper->escapeHtml(__('Queue Status')) ?></th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php foreach ($queues as $q): ?>
+                    <tr style="border-bottom: 1px solid #f1f5f9;" data-queue="<?= $escaper->escapeHtmlAttr($q['queue_name']) ?>">
+                        <td style="padding: 12px; font-weight: 600; color: #1e293b;"><?= $escaper->escapeHtml($q['title']) ?></td>
+                        <td style="padding: 12px; font-family: monospace; color: #64748b; font-size: 11px;"><?= $escaper->escapeHtml($q['queue_name']) ?></td>
+                        <td style="padding: 12px;" class="col-pending">
+                            <?php if ($q['message_count'] > 0): ?>
+                                <span style="display: inline-block; padding: 2px 10px; background: #e0f2fe; color: #0369a1; border-radius: 12px; font-weight: 700; font-size: 11px;">
+                                    <?= $escaper->escapeHtml(__('%1 Pending', $q['message_count'])) ?>
+                                </span>
+                            <?php else: ?>
+                                <span style="display: inline-block; padding: 2px 10px; background: #dcfce7; color: #166534; border-radius: 12px; font-weight: 600; font-size: 11px;">
+                                    <?= $escaper->escapeHtml(__('0 Pending')) ?>
+                                </span>
+                            <?php endif; ?>
+                        </td>
+                        <td style="padding: 12px; color: #475569;" class="col-consumers">
+                            <?= (int) $q['consumer_count'] ?> <?= $escaper->escapeHtml(__('active')) ?>
+                        </td>
+                        <td style="padding: 12px;">
+                            <?php if ($q['is_available']): ?>
+                                <span style="display: inline-block; padding: 2px 8px; border-radius: 10px; font-size: 11px; font-weight: 600; background: #dcfce7; color: #166534;">
+                                    <?= $escaper->escapeHtml(__('Connected (Ready)')) ?>
+                                </span>
+                            <?php else: ?>
+                                <span style="display: inline-block; padding: 2px 8px; border-radius: 10px; font-size: 11px; font-weight: 600; background: #fef08a; color: #854d0e;">
+                                    <?= $escaper->escapeHtml(__('Waiting for Connection')) ?>
+                                </span>
+                            <?php endif; ?>
+                        </td>
+                    </tr>
+                <?php endforeach; ?>
+            </tbody>
+        </table>
+
+        <!-- Consumer Explanation Notice -->
+        <div style="margin-top: 14px; padding: 12px 14px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 4px; font-size: 11px; color: #475569; line-height: 1.6;">
+            <strong style="color: #0f172a;">ℹ️ <?= $escaper->escapeHtml(__('Understanding Active Consumers & Queue Processing:')) ?></strong><br>
+            <?= $escaper->escapeHtml(__('When "Active Consumers" shows 0, tasks remain safely staged in RabbitMQ until processed. Tasks are automatically drained via Magento cron (* * * * * bin/magento cron:run) every minute. You can also drain queues on-demand using the "Process Pending Tasks Now" button above, or configure automated cron execution under Stores > Configuration > Clusterify.AI > ChatBot & Assistant.')) ?>
+        </div>
+    </div>
+
+    <!-- CLI Management & Synchronization Commands (1-Column Stacked Rows) -->
+    <div style="background: #1e293b; color: #f8fafc; border-radius: 6px; padding: 20px; font-family: monospace; font-size: 12px; margin-bottom: 24px;">
+        <div style="color: #38bdf8; font-weight: 700; margin-bottom: 14px; font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px;">
+            <?= $escaper->escapeHtml(__('CLI Management & Synchronization Commands')) ?>
+        </div>
+
+        <div style="display: flex; flex-direction: column; gap: 10px;">
+            <!-- Row 1 -->
+            <div style="background: #0f172a; border: 1px solid #334155; border-radius: 4px; padding: 10px 14px; display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap;">
+                <div style="color: #94a3b8; font-size: 11px; min-width: 240px;"><?= $escaper->escapeHtml(__('View synchronization status & quota:')) ?></div>
+                <code style="color: #38bdf8; font-size: 12px; flex: 1; text-align: right; user-select: all;">bin/magento clusterify:chatbot:sync:status</code>
+            </div>
+
+            <!-- Row 2 -->
+            <div style="background: #0f172a; border: 1px solid #334155; border-radius: 4px; padding: 10px 14px; display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap;">
+                <div style="color: #94a3b8; font-size: 11px; min-width: 240px;"><?= $escaper->escapeHtml(__('Queue all entities (CMS, Categories, Products):')) ?></div>
+                <code style="color: #38bdf8; font-size: 12px; flex: 1; text-align: right; user-select: all;">bin/magento clusterify:chatbot:sync:run</code>
+            </div>
+
+            <!-- Row 3 -->
+            <div style="background: #0f172a; border: 1px solid #334155; border-radius: 4px; padding: 10px 14px; display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap;">
+                <div style="color: #94a3b8; font-size: 11px; min-width: 240px;"><?= $escaper->escapeHtml(__('Queue CMS pages only:')) ?></div>
+                <code style="color: #38bdf8; font-size: 12px; flex: 1; text-align: right; user-select: all;">bin/magento clusterify:chatbot:sync:run --entity=cms</code>
+            </div>
+
+            <!-- Row 4 -->
+            <div style="background: #0f172a; border: 1px solid #334155; border-radius: 4px; padding: 10px 14px; display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap;">
+                <div style="color: #94a3b8; font-size: 11px; min-width: 240px;"><?= $escaper->escapeHtml(__('Preview extracted Markdown locally:')) ?></div>
+                <code style="color: #38bdf8; font-size: 12px; flex: 1; text-align: right; user-select: all;">bin/magento clusterify:chatbot:sync:run --entity=cms --dry-run</code>
+            </div>
+
+            <!-- Row 5 -->
+            <div style="background: #0f172a; border: 1px solid #334155; border-radius: 4px; padding: 10px 14px; display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap;">
+                <div style="color: #94a3b8; font-size: 11px; min-width: 240px;"><?= $escaper->escapeHtml(__('Process and drain queued tasks (CLI):')) ?></div>
+                <code style="color: #38bdf8; font-size: 12px; flex: 1; text-align: right; user-select: all;">bin/magento clusterify:chatbot:sync:consume</code>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script type="text/javascript">
+require(['jquery'], function ($) {
+    'use strict';
+
+    $('#btn-process-queue').on('click', function () {
+        var $btn = $(this);
+        var $feedback = $('#queue-process-feedback');
+        var originalHtml = $btn.html();
+
+        $btn.prop('disabled', true).text('<?= $escaper->escapeJs(__('Processing tasks...')) ?>');
+        $feedback.hide();
+
+        $.ajax({
+            url: '<?= $escaper->escapeUrl($block->getUrl('clusterify_chatbot/status/processQueue')) ?>',
+            type: 'POST',
+            dataType: 'json',
+            data: { form_key: window.FORM_KEY },
+            success: function (response) {
+                $btn.prop('disabled', false).html(originalHtml);
+
+                if (response.success) {
+                    $feedback.css({'background': '#dcfce7', 'color': '#166534', 'border': '1px solid #bbf7d0'})
+                        .text(response.message).fadeIn();
+
+                    if (response.queues && response.queues.length) {
+                        $.each(response.queues, function (i, q) {
+                            var $row = $('tr[data-queue="' + q.queue_name + '"]');
+                            if ($row.length) {
+                                var badge = q.message_count > 0
+                                    ? '<span style="display: inline-block; padding: 2px 10px; background: #e0f2fe; color: #0369a1; border-radius: 12px; font-weight: 700; font-size: 11px;">' + q.message_count + ' <?= $escaper->escapeJs(__('Pending')) ?></span>'
+                                    : '<span style="display: inline-block; padding: 2px 10px; background: #dcfce7; color: #166534; border-radius: 12px; font-weight: 600; font-size: 11px;"><?= $escaper->escapeJs(__('0 Pending')) ?></span>';
+                                $row.find('.col-pending').html(badge);
+                            }
+                        });
+                    }
+                } else {
+                    $feedback.css({'background': '#fee2e2', 'color': '#991b1b', 'border': '1px solid #fecaca'})
+                        .text(response.message || '<?= $escaper->escapeJs(__('Error processing tasks.')) ?>').fadeIn();
+                }
+            },
+            error: function () {
+                $btn.prop('disabled', false).html(originalHtml);
+                $feedback.css({'background': '#fee2e2', 'color': '#991b1b', 'border': '1px solid #fecaca'})
+                    .text('<?= $escaper->escapeJs(__('Network error occurred while contacting the server.')) ?>').fadeIn();
+            }
+        });
+    });
+});
+</script>

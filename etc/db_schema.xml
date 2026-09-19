@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * ClusterifyAI ChatBot database schema declaration
+ *
+ * @category  ClusterifyAI
+ * @package   ClusterifyAI_ChatBot
+ * @author    Clusterify AI <support@clusterify.ai>
+ * @copyright Copyright (c) 2026 Clusterify AI (https://clusterify.ai)
+ * @license   MIT License
+ */
+-->
+<schema xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:framework:Setup/Declaration/Schema/etc/schema.xsd">
+    <table name="cms_page" resource="default" engine="innodb" comment="CMS Page Table">
+        <column xsi:type="mediumtext" name="clusterify_chatbot_knowledge" nullable="true"
+                comment="Clusterify AI ChatBot Training Knowledge Context"/>
+    </table>
+</schema>

@@ -1,0 +1,260 @@
+<?php
+/**
+ * ClusterifyAI ChatBot admin navigation menu enhancer template
+ *
+ * @category  ClusterifyAI
+ * @package   ClusterifyAI_ChatBot
+ * @author    Clusterify AI <support@clusterify.ai>
+ * @copyright Copyright (c) 2026 Clusterify AI (https://clusterify.ai)
+ * @license   MIT License
+ *
+ * @var \ClusterifyAI\ChatBot\Block\Adminhtml\Menu\NavEnhancer $block
+ * @var \Magento\Framework\Escaper $escaper
+ */
+
+$hasCredentials = $block->hasApiCredentials();
+$isAllowed = $block->isUrlKnowledgeAllowed();
+$planName = $block->getPlanName();
+$planId = $block->getPlanId();
+$billingUrl = $block->getBillingUrl();
+?>
+<style type="text/css">
+/* Clusterify.AI Main Navigation Sidebar Icon & Label */
+.admin__menu .item-clusterify-root > a:before {
+    content: '' !important;
+    display: block !important;
+    width: 2.8rem !important;
+    height: 2.8rem !important;
+    margin: 0 auto 0.2rem !important;
+    background-color: #a6a6a6 !important;
+    -webkit-mask-image: url('<?= $block->getSvgDataUri() ?>'), url('<?= $escaper->escapeUrl($block->getViewFileUrl('ClusterifyAI_ChatBot::images/chatbot-icon.svg')) ?>');
+    mask-image: url('<?= $block->getSvgDataUri() ?>'), url('<?= $escaper->escapeUrl($block->getViewFileUrl('ClusterifyAI_ChatBot::images/chatbot-icon.svg')) ?>');
+    -webkit-mask-repeat: no-repeat !important;
+    mask-repeat: no-repeat !important;
+    -webkit-mask-position: center center !important;
+    mask-position: center center !important;
+    -webkit-mask-size: contain !important;
+    mask-size: contain !important;
+    transition: background-color 0.15s ease-in-out !important;
+}
+
+.admin__menu .item-clusterify-root > a > span {
+    font-size: 1.1rem !important;
+    font-weight: 700 !important;
+    letter-spacing: 0.5px !important;
+}
+
+.admin__menu .item-clusterify-root:hover > a:before,
+.admin__menu .item-clusterify-root._active > a:before {
+    background-color: #ffffff !important;
+}
+
+/* Plan Status Header inside Flyout Menu Panel */
+.clusterify-nav-plan-banner {
+    display: block;
+    margin: 0 0 15px 0;
+    padding: 12px 14px;
+    background: #f0f9ff;
+    border: 1px solid #bae6fd;
+    border-left: 4px solid #0284c7;
+    border-radius: 6px;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    line-height: 1.4;
+}
+.clusterify-nav-plan-banner .plan-title {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    margin-bottom: 4px;
+}
+.clusterify-nav-plan-banner .plan-name {
+    font-weight: 700;
+    font-size: 12px;
+    color: #0369a1;
+}
+.clusterify-nav-plan-banner .plan-status-badge {
+    display: inline-block;
+    font-size: 10px;
+    padding: 2px 7px;
+    border-radius: 10px;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+    text-transform: uppercase;
+}
+.clusterify-nav-plan-banner .plan-badge-pro {
+    background: #dcfce7;
+    color: #166534;
+}
+.clusterify-nav-plan-banner .plan-badge-starter {
+    background: #e0f2fe;
+    color: #0369a1;
+}
+.clusterify-nav-plan-banner .plan-desc {
+    font-size: 11px;
+    color: #334155;
+}
+.clusterify-nav-plan-banner .plan-upgrade-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    font-size: 11px;
+    font-weight: 600;
+    color: #0284c7;
+    text-decoration: underline;
+    margin-top: 4px;
+}
+.clusterify-nav-plan-banner .plan-upgrade-link:hover {
+    color: #0369a1;
+}
+
+/* Enlarge and properly align the native Magento square+arrow external link icon */
+.admin__menu .item-clusterify-root a[target='_blank']:after,
+.item-clusterify-root .submenu a[target='_blank']:after {
+    font-size: 1.1rem !important;
+    vertical-align: middle !important;
+    margin-left: 6px !important;
+    opacity: 0.75 !important;
+    display: inline-block !important;
+    line-height: 1 !important;
+}
+
+.admin__menu .item-clusterify-root a[target='_blank']:hover:after,
+.item-clusterify-root .submenu a[target='_blank']:hover:after {
+    opacity: 1 !important;
+}
+</style>
+
+<!-- Hidden Template for Flyout Submenu Plan Banner -->
+<div id="clusterify-nav-plan-template" style="display: none;">
+    <div class="clusterify-nav-plan-banner" id="clusterify-nav-plan-banner">
+        <div class="plan-title">
+            <span class="plan-name">
+                <?= $escaper->escapeHtml(__('Subscription:')) ?>
+            </span>
+            <?php if ($isAllowed || $planId >= 2): ?>
+                <span class="plan-status-badge plan-badge-pro">
+                    <?= $escaper->escapeHtml($planName) ?>
+                </span>
+            <?php elseif ($hasCredentials): ?>
+                <span class="plan-status-badge plan-badge-starter">
+                    <?= $escaper->escapeHtml($planName) ?>
+                </span>
+            <?php else: ?>
+                <span class="plan-status-badge" style="background: #f1f5f9; color: #64748b;">
+                    <?= $escaper->escapeHtml(__('Not Configured')) ?>
+                </span>
+            <?php endif; ?>
+        </div>
+        <div class="plan-desc">
+            <?php if ($isAllowed || $planId >= 2): ?>
+                <?= $escaper->escapeHtml(__('URL Knowledge Base synchronization is active and supported.')) ?>
+            <?php elseif ($hasCredentials): ?>
+                <?= $escaper->escapeHtml(__('Chatbot operates via Public UUID.')) ?>
+                <br>
+                <a href="<?= $escaper->escapeUrl($billingUrl) ?>" target="_blank" rel="noopener noreferrer" class="plan-upgrade-link">
+                    <?= $escaper->escapeHtml(__('Upgrade to Professional Plan')) ?>
+                </a>
+            <?php else: ?>
+                <?= $escaper->escapeHtml(__('API credentials are required for live features.')) ?>
+            <?php endif; ?>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+require(['jquery'], function ($) {
+    'use strict';
+
+    function injectPlanBanner() {
+        var $submenu = $('.item-clusterify-root .submenu');
+        if ($submenu.length) {
+            // Set submenu panel title to full 'ChatBot & Assistant'
+            var $title = $submenu.find('.submenu-title');
+            if ($title.length) {
+                $title.text('ChatBot & Assistant');
+            }
+
+            // Inject plan status banner if not yet injected
+            if (!$('#clusterify-nav-plan-banner').length) {
+                var $banner = $('#clusterify-nav-plan-template').children().clone();
+                if ($title.length) {
+                    $title.after($banner);
+                } else {
+                    $submenu.prepend($banner);
+                }
+            }
+        }
+    }
+
+    function enhanceExternalLinks() {
+        var externalLinks = {
+            'item-menu-platform-dashboard': 'https://dashboard.clusterify.ai',
+            'item-menu-platform-billing': 'https://dashboard.clusterify.ai/billing',
+            'item-menu-platform-chatbot': 'https://dashboard.clusterify.ai/chatbot',
+            'item-menu-platform-api-keys': 'https://dashboard.clusterify.ai/api-key'
+        };
+
+        $.each(externalLinks, function (itemClass, targetUrl) {
+            var $link = $('.item-clusterify-root .' + itemClass + ' > a');
+            if ($link.length && !$link.hasClass('clusterify-enhanced')) {
+                $link.addClass('clusterify-enhanced')
+                    .attr('href', targetUrl)
+                    .attr('target', '_blank')
+                    .attr('rel', 'noopener noreferrer');
+            }
+        });
+    }
+
+    function handleConfigGroupNavigation() {
+        if (!window.location.pathname.includes('clusterify_chatbot')) {
+            return;
+        }
+
+        var match = window.location.pathname.match(/\/group\/([a-zA-Z0-9_]+)/);
+        var groupId = match ? match[1] : null;
+
+        if (!groupId && window.location.hash) {
+            groupId = window.location.hash.replace('#', '').replace('clusterify_chatbot_', '').replace('-head', '');
+        }
+
+        if (groupId) {
+            var targetId = 'clusterify_chatbot_' + groupId;
+            var $head = $('#' + targetId + '-head');
+            var $target = $head.length ? $head : $('#' + targetId);
+
+            if ($target.length) {
+                // Ensure section is expanded if collapsed
+                if ($head.length && !$head.hasClass('open') && typeof Fieldset !== 'undefined') {
+                    Fieldset.toggleCollapse(targetId);
+                }
+
+                // Smooth scroll directly to the section
+                setTimeout(function () {
+                    $('html, body').animate({
+                        scrollTop: Math.max(0, $target.offset().top - 80)
+                    }, 400);
+
+                    // Add brief focus highlight
+                    $target.css({'transition': 'background 0.4s ease-out', 'background': '#e0f2fe'});
+                    setTimeout(function () {
+                        $target.css('background', '');
+                    }, 2000);
+                }, 300);
+            }
+        }
+    }
+
+    $(function () {
+        injectPlanBanner();
+        enhanceExternalLinks();
+        handleConfigGroupNavigation();
+
+        // Also observe menu interactions if lazily loaded
+        $(document).on('mouseenter click', '.item-clusterify-root, #nav', function () {
+            injectPlanBanner();
+            enhanceExternalLinks();
+        });
+    });
+});
+</script>

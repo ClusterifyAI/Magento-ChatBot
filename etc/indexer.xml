@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+/**
+ * ClusterifyAI ChatBot indexer declarations
+ *
+ * @category  ClusterifyAI
+ * @package   ClusterifyAI_ChatBot
+ * @author    Clusterify AI <support@clusterify.ai>
+ * @copyright Copyright (c) 2026 Clusterify AI (https://clusterify.ai)
+ * @license   MIT License
+ */
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:framework:Indexer/etc/indexer.xsd">
+    <indexer id="clusterify_chatbot_cms" view_id="clusterify_chatbot_cms" class="ClusterifyAI\ChatBot\Model\Indexer\Cms">
+        <title translate="true">Clusterify AI: CMS Pages</title>
+        <description translate="true">Synchronize CMS pages to Clusterify.AI ChatBot URL knowledge base via RabbitMQ</description>
+    </indexer>
+    <indexer id="clusterify_chatbot_category" view_id="clusterify_chatbot_category" class="ClusterifyAI\ChatBot\Model\Indexer\Category">
+        <title translate="true">Clusterify AI: Categories</title>
+        <description translate="true">Synchronize category pages to Clusterify.AI ChatBot URL knowledge base via RabbitMQ</description>
+    </indexer>
+    <indexer id="clusterify_chatbot_product" view_id="clusterify_chatbot_product" class="ClusterifyAI\ChatBot\Model\Indexer\Product">
+        <title translate="true">Clusterify AI: Products</title>
+        <description translate="true">Synchronize product pages to Clusterify.AI ChatBot URL knowledge base via RabbitMQ</description>
+    </indexer>
+</config>

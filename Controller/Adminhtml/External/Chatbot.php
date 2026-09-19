@@ -1,0 +1,41 @@
+<?php
+/**
+ * ClusterifyAI ChatBot external chatbot settings redirect action
+ *
+ * @category  ClusterifyAI
+ * @package   ClusterifyAI_ChatBot
+ * @author    Clusterify AI <support@clusterify.ai>
+ * @copyright Copyright (c) 2026 Clusterify AI (https://clusterify.ai)
+ * @license   MIT License
+ */
+
+declare(strict_types=1);
+
+namespace ClusterifyAI\ChatBot\Controller\Adminhtml\External;
+
+use Magento\Backend\App\Action;
+use Magento\Framework\App\Action\HttpGetActionInterface;
+use Magento\Framework\Controller\Result\Redirect;
+
+/**
+ * Class Chatbot
+ *
+ * Redirects admin user to the external Clusterify.AI Chatbot builder and settings page.
+ */
+class Chatbot extends Action implements HttpGetActionInterface
+{
+    public const ADMIN_RESOURCE = 'ClusterifyAI_ChatBot::status';
+    public const TARGET_URL = 'https://dashboard.clusterify.ai/chatbot';
+
+    /**
+     * Execute redirect.
+     *
+     * @return Redirect
+     */
+    public function execute(): Redirect
+    {
+        /** @var Redirect $resultRedirect */
+        $resultRedirect = $this->resultRedirectFactory->create();
+        return $resultRedirect->setUrl(self::TARGET_URL);
+    }
+}

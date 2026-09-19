@@ -1,0 +1,43 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * ClusterifyAI ChatBot default configuration values
+ *
+ * @category  ClusterifyAI
+ * @package   ClusterifyAI_ChatBot
+ * @author    Clusterify AI <support@clusterify.ai>
+ * @copyright Copyright (c) 2026 Clusterify AI (https://clusterify.ai)
+ * @license   MIT License
+ */
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Store:etc/config.xsd">
+    <default>
+        <clusterify_chatbot>
+            <general>
+                <enabled>0</enabled>
+                <show_on_storefront>0</show_on_storefront>
+            </general>
+            <starter_plan>
+                <public_uuid></public_uuid>
+            </starter_plan>
+            <authorization>
+                <public_key></public_key>
+                <secret_key></secret_key>
+                <api_base_url>https://api.clusterify.ai</api_base_url>
+            </authorization>
+            <url_knowledge_sync>
+                <enabled>0</enabled>
+                <sync_cms>1</sync_cms>
+                <sync_categories>1</sync_categories>
+                <sync_products>1</sync_products>
+                <custom_knowledge_only>1</custom_knowledge_only>
+                <sync_product_price>0</sync_product_price>
+                <sync_product_availability>0</sync_product_availability>
+                <in_stock_only>0</in_stock_only>
+                <queue_cron_enabled>1</queue_cron_enabled>
+                <queue_batch_size>50</queue_batch_size>
+            </url_knowledge_sync>
+        </clusterify_chatbot>
+    </default>
+</config>

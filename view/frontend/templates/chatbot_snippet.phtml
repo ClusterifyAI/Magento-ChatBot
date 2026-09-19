@@ -1,0 +1,30 @@
+<?php
+/**
+ * ClusterifyAI ChatBot storefront embed template
+ *
+ * @category  ClusterifyAI
+ * @package   ClusterifyAI_ChatBot
+ * @author    Clusterify AI <support@clusterify.ai>
+ * @copyright Copyright (c) 2026 Clusterify AI (https://clusterify.ai)
+ * @license   MIT License
+ *
+ * @var \ClusterifyAI\ChatBot\Block\ChatbotSnippet $block
+ * @var \Magento\Framework\Escaper $escaper
+ */
+
+if (!$block->canShowChatbot()) {
+    return;
+}
+?>
+<!-- Clusterify.AI ChatBot Loader - START -->
+<script id="clusterify-chatbot-script">
+(function () {
+    window.__clusterify = window.__clusterify || {};
+    window.__clusterify.public_uuid = <?= json_encode($block->getPublicUuid(), JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP) ?>;
+    var script = document.createElement("script");
+    script.src = "<?= $escaper->escapeUrl($block->getBundleScriptUrl()) ?>";
+    document.head.appendChild(script);
+})();
+</script>
+<noscript><?= $escaper->escapeHtml(__('Please enable JavaScript to access the Clusterify.AI ChatBot.')) ?></noscript>
+<!-- Clusterify.AI ChatBot Loader - END -->

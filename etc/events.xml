@@ -1,0 +1,42 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * ClusterifyAI ChatBot events configuration
+ *
+ * @category  ClusterifyAI
+ * @package   ClusterifyAI_ChatBot
+ * @author    Clusterify AI <support@clusterify.ai>
+ * @copyright Copyright (c) 2026 Clusterify AI (https://clusterify.ai)
+ * @license   MIT License
+ */
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:framework:Event/etc/events.xsd">
+    <!-- Save Commit Observers for Complete Attribute & Staging Capture -->
+    <event name="catalog_product_save_commit_after">
+        <observer name="clusterify_chatbot_product_save_after"
+                  instance="ClusterifyAI\ChatBot\Observer\ProductSaveObserver" />
+    </event>
+    <event name="catalog_category_save_commit_after">
+        <observer name="clusterify_chatbot_category_save_after"
+                  instance="ClusterifyAI\ChatBot\Observer\CategorySaveObserver" />
+    </event>
+    <event name="cms_page_save_commit_after">
+        <observer name="clusterify_chatbot_cms_page_save_after"
+                  instance="ClusterifyAI\ChatBot\Observer\CmsSaveObserver" />
+    </event>
+
+    <!-- Pre-Deletion Observers for Direct URL Purge -->
+    <event name="catalog_product_delete_before">
+        <observer name="clusterify_chatbot_product_delete_before"
+                  instance="ClusterifyAI\ChatBot\Observer\EntityDeleteObserver" />
+    </event>
+    <event name="catalog_category_delete_before">
+        <observer name="clusterify_chatbot_category_delete_before"
+                  instance="ClusterifyAI\ChatBot\Observer\EntityDeleteObserver" />
+    </event>
+    <event name="cms_page_delete_before">
+        <observer name="clusterify_chatbot_cms_page_delete_before"
+                  instance="ClusterifyAI\ChatBot\Observer\EntityDeleteObserver" />
+    </event>
+</config>

@@ -1,0 +1,159 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * ClusterifyAI ChatBot admin menu configuration
+ *
+ * @category  ClusterifyAI
+ * @package   ClusterifyAI_ChatBot
+ * @author    Clusterify AI <support@clusterify.ai>
+ * @copyright Copyright (c) 2026 Clusterify AI (https://clusterify.ai)
+ * @license   MIT License
+ */
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Backend:etc/menu.xsd">
+    <menu>
+        <!-- Top-Level Main Left Sidebar Navigation Item -->
+        <add id="ClusterifyAI_ChatBot::clusterify_root"
+             title="CHATBOT"
+             translate="title"
+             module="ClusterifyAI_ChatBot"
+             sortOrder="45"
+             resource="ClusterifyAI_ChatBot::status"/>
+
+        <!-- Menu Block 1: Monitoring & Operations -->
+        <add id="ClusterifyAI_ChatBot::menu_monitoring"
+             title="Monitoring &amp; Operations"
+             translate="title"
+             module="ClusterifyAI_ChatBot"
+             sortOrder="10"
+             parent="ClusterifyAI_ChatBot::clusterify_root"
+             resource="ClusterifyAI_ChatBot::status"/>
+
+        <add id="ClusterifyAI_ChatBot::menu_monitoring_info"
+             title="Important Information"
+             translate="title"
+             module="ClusterifyAI_ChatBot"
+             sortOrder="5"
+             parent="ClusterifyAI_ChatBot::menu_monitoring"
+             action="clusterify_chatbot/info/index"
+             resource="ClusterifyAI_ChatBot::status"/>
+
+        <add id="ClusterifyAI_ChatBot::menu_monitoring_status"
+             title="Dashboard &amp; Status"
+             translate="title"
+             module="ClusterifyAI_ChatBot"
+             sortOrder="10"
+             parent="ClusterifyAI_ChatBot::menu_monitoring"
+             action="clusterify_chatbot/status/index"
+             resource="ClusterifyAI_ChatBot::status"/>
+
+        <add id="ClusterifyAI_ChatBot::menu_monitoring_indexers"
+             title="Index Management"
+             translate="title"
+             module="ClusterifyAI_ChatBot"
+             sortOrder="20"
+             parent="ClusterifyAI_ChatBot::menu_monitoring"
+             action="indexer/indexer/list"
+             resource="ClusterifyAI_ChatBot::status"/>
+
+        <!-- Menu Block 2: Settings & Visibility -->
+        <add id="ClusterifyAI_ChatBot::menu_settings"
+             title="Settings &amp; Visibility"
+             translate="title"
+             module="ClusterifyAI_ChatBot"
+             sortOrder="20"
+             parent="ClusterifyAI_ChatBot::clusterify_root"
+             resource="ClusterifyAI_ChatBot::config"/>
+
+        <add id="ClusterifyAI_ChatBot::menu_settings_config"
+             title="Extension Configuration"
+             translate="title"
+             module="ClusterifyAI_ChatBot"
+             sortOrder="10"
+             parent="ClusterifyAI_ChatBot::menu_settings"
+             action="adminhtml/system_config/edit/section/clusterify_chatbot"
+             resource="ClusterifyAI_ChatBot::config"/>
+
+        <add id="ClusterifyAI_ChatBot::menu_settings_visibility"
+             title="Page Type Visibility"
+             translate="title"
+             module="ClusterifyAI_ChatBot"
+             sortOrder="20"
+             parent="ClusterifyAI_ChatBot::menu_settings"
+             action="adminhtml/system_config/edit/section/clusterify_chatbot/group/page_visibility"
+             resource="ClusterifyAI_ChatBot::config"/>
+
+        <add id="ClusterifyAI_ChatBot::menu_settings_sync"
+             title="URL Knowledge Sync"
+             translate="title"
+             module="ClusterifyAI_ChatBot"
+             sortOrder="30"
+             parent="ClusterifyAI_ChatBot::menu_settings"
+             action="adminhtml/system_config/edit/section/clusterify_chatbot/group/url_knowledge_sync"
+             resource="ClusterifyAI_ChatBot::config"/>
+
+        <!-- Menu Block 3: Clusterify.AI (Direct External Portal Links) -->
+        <add id="ClusterifyAI_ChatBot::menu_platform"
+             title="Clusterify.AI"
+             translate="title"
+             module="ClusterifyAI_ChatBot"
+             sortOrder="30"
+             parent="ClusterifyAI_ChatBot::clusterify_root"
+             resource="ClusterifyAI_ChatBot::status"/>
+
+        <add id="ClusterifyAI_ChatBot::menu_platform_dashboard"
+             title="Dashboard"
+             translate="title"
+             module="ClusterifyAI_ChatBot"
+             sortOrder="10"
+             parent="ClusterifyAI_ChatBot::menu_platform"
+             action="clusterify_chatbot/external/dashboard"
+             resource="ClusterifyAI_ChatBot::status"/>
+
+        <add id="ClusterifyAI_ChatBot::menu_platform_billing"
+             title="Plan &amp; Billing"
+             translate="title"
+             module="ClusterifyAI_ChatBot"
+             sortOrder="20"
+             parent="ClusterifyAI_ChatBot::menu_platform"
+             action="clusterify_chatbot/external/billing"
+             resource="ClusterifyAI_ChatBot::status"/>
+
+        <add id="ClusterifyAI_ChatBot::menu_platform_chatbot"
+             title="ChatBot"
+             translate="title"
+             module="ClusterifyAI_ChatBot"
+             sortOrder="30"
+             parent="ClusterifyAI_ChatBot::menu_platform"
+             action="clusterify_chatbot/external/chatbot"
+             resource="ClusterifyAI_ChatBot::status"/>
+
+        <add id="ClusterifyAI_ChatBot::menu_platform_api_keys"
+             title="API Integration"
+             translate="title"
+             module="ClusterifyAI_ChatBot"
+             sortOrder="40"
+             parent="ClusterifyAI_ChatBot::menu_platform"
+             action="clusterify_chatbot/external/apiKeys"
+             resource="ClusterifyAI_ChatBot::status"/>
+
+        <!-- Retain Marketing Menu Shortcut -->
+        <add id="ClusterifyAI_ChatBot::marketing_chatbot"
+             title="Chatbot &amp; Assistant"
+             translate="title"
+             module="ClusterifyAI_ChatBot"
+             sortOrder="60"
+             parent="Magento_Backend::marketing"
+             resource="ClusterifyAI_ChatBot::status"/>
+
+        <add id="ClusterifyAI_ChatBot::marketing_chatbot_status"
+             title="Dashboard &amp; Status"
+             translate="title"
+             module="ClusterifyAI_ChatBot"
+             sortOrder="10"
+             parent="ClusterifyAI_ChatBot::marketing_chatbot"
+             action="clusterify_chatbot/status/index"
+             resource="ClusterifyAI_ChatBot::status"/>
+    </menu>
+</config>

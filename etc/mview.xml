@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+/**
+ * ClusterifyAI ChatBot Mview changelog subscriptions
+ *
+ * @category  ClusterifyAI
+ * @package   ClusterifyAI_ChatBot
+ * @author    Clusterify AI <support@clusterify.ai>
+ * @copyright Copyright (c) 2026 Clusterify AI (https://clusterify.ai)
+ * @license   MIT License
+ */
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:framework:Mview/etc/mview.xsd">
+    <view id="clusterify_chatbot_cms" class="ClusterifyAI\ChatBot\Model\Indexer\Cms" group="indexer">
+        <subscriptions>
+            <table name="cms_page" entity_column="page_id" />
+        </subscriptions>
+    </view>
+    <view id="clusterify_chatbot_category" class="ClusterifyAI\ChatBot\Model\Indexer\Category" group="indexer">
+        <subscriptions>
+            <table name="catalog_category_entity" entity_column="entity_id" />
+        </subscriptions>
+    </view>
+    <view id="clusterify_chatbot_product" class="ClusterifyAI\ChatBot\Model\Indexer\Product" group="indexer">
+        <subscriptions>
+            <table name="catalog_product_entity" entity_column="entity_id" />
+            <table name="cataloginventory_stock_item" entity_column="product_id" />
+            <table name="cataloginventory_stock_status" entity_column="product_id" />
+        </subscriptions>
+    </view>
+</config>

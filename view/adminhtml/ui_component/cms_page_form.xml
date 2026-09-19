@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+/**
+ * ClusterifyAI ChatBot CMS page form UI component
+ *
+ * @category  ClusterifyAI
+ * @package   ClusterifyAI_ChatBot
+ * @author    Clusterify AI <support@clusterify.ai>
+ * @copyright Copyright (c) 2026 Clusterify AI (https://clusterify.ai)
+ * @license   MIT License
+ */
+-->
+<form xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Ui:etc/ui_configuration.xsd">
+    <fieldset name="clusterify_chatbot" sortOrder="25">
+        <settings>
+            <collapsible>true</collapsible>
+            <label translate="true">Clusterify AI ChatBot</label>
+        </settings>
+        <container name="clusterify_chatbot_knowledge_notice_container" sortOrder="5">
+            <htmlContent name="html_content">
+                <block name="clusterify_chatbot_cms_notice"
+                       class="ClusterifyAI\ChatBot\Block\Adminhtml\Cms\Helper\KnowledgeNotice"/>
+            </htmlContent>
+        </container>
+        <field name="clusterify_chatbot_knowledge" sortOrder="10" formElement="textarea">
+            <settings>
+                <dataType>text</dataType>
+                <label translate="true">ChatBot Knowledge &amp; AI Context</label>
+                <dataScope>clusterify_chatbot_knowledge</dataScope>
+                <visible>true</visible>
+                <required>false</required>
+                <validation>
+                    <rule name="max_text_length" xsi:type="number">20000</rule>
+                </validation>
+                <notice translate="true">Dedicated CMS page AI context synchronized to Clusterify.AI (max 20,000 characters). Used to train the assistant on store policies, company background, service terms, and specific page guidance.</notice>
+            </settings>
+            <formElements>
+                <textarea>
+                    <settings>
+                        <rows>12</rows>
+                    </settings>
+                </textarea>
+            </formElements>
+        </field>
+    </fieldset>
+</form>

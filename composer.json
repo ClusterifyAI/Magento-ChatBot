@@ -1,0 +1,29 @@
+{
+    "name": "clusterify/magento-chatbot",
+    "description": "Official Clusterify.AI Chatbot and AI Assistant integration for Magento 2",
+    "type": "magento2-module",
+    "version": "1.0.0",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Clusterify AI",
+            "email": "support@clusterify.ai",
+            "homepage": "https://clusterify.ai"
+        }
+    ],
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "require": {
+        "php": "~8.2.0||~8.3.0||~8.4.0||~8.5.0",
+        "magento/framework": "*",
+        "clusterify/chatbot-sdk": "^1.0 || dev-main"
+    },
+    "autoload": {
+        "files": [
+            "registration.php"
+        ],
+        "psr-4": {
+            "ClusterifyAI\\ChatBot\\": ""
+        }
+    }
+}

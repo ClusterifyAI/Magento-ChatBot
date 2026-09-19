@@ -1,0 +1,202 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * ClusterifyAI ChatBot system configuration declaration
+ *
+ * @category  ClusterifyAI
+ * @package   ClusterifyAI_ChatBot
+ * @author    Clusterify AI <support@clusterify.ai>
+ * @copyright Copyright (c) 2026 Clusterify AI (https://clusterify.ai)
+ * @license   MIT License
+ */
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_file.xsd">
+    <system>
+        <tab id="clusterify_ai" translate="label" sortOrder="250">
+            <label>Clusterify.AI</label>
+        </tab>
+        <section id="clusterify_chatbot" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+            <class>separator-top</class>
+            <label>ChatBot &amp; Assistant</label>
+            <tab>clusterify_ai</tab>
+            <resource>ClusterifyAI_ChatBot::config</resource>
+
+            <!-- General Module Settings -->
+            <group id="general" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>General Configuration</label>
+
+                <field id="general_info_notice" translate="label" type="label" sortOrder="5" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <frontend_model>ClusterifyAI\ChatBot\Block\Adminhtml\System\Config\Form\Field\GeneralNotice</frontend_model>
+                </field>
+
+                <field id="enabled" translate="label comment" type="select" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                    <label>Enable Extension</label>
+                    <frontend_model>ClusterifyAI\ChatBot\Block\Adminhtml\System\Config\Form\Field\SwitchToggle</frontend_model>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <comment>Disabling this will completely disable the extension and will not allow the Chatbot/Assistant to appear on the storefront.</comment>
+                </field>
+
+                <field id="show_on_storefront" translate="label comment" type="select" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                    <label>Show Chatbot on Storefront</label>
+                    <frontend_model>ClusterifyAI\ChatBot\Block\Adminhtml\System\Config\Form\Field\SwitchToggle</frontend_model>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <comment>Disables the Chatbot appearance on the storefront while backend features and synchronization remain active.</comment>
+                </field>
+            </group>
+
+            <!-- ChatBot / Assistant Public UUID -->
+            <group id="starter_plan" translate="label" type="text" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>ChatBot/Assistant Public UUID</label>
+
+                <field id="public_uuid" translate="label comment" type="text" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                    <label>ChatBot Public UUID</label>
+                    <comment>Provide the ChatBot Public UUID from your Clusterify Dashboard > Chatbot page.</comment>
+                </field>
+
+                <field id="snippet_preview" translate="label comment" type="label" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Automatic Storefront Embed Code (Information / Preview Only)</label>
+                    <frontend_model>ClusterifyAI\ChatBot\Block\Adminhtml\System\Config\Form\Field\SnippetPreview</frontend_model>
+                </field>
+            </group>
+
+            <!-- ChatBot Page Visibility & Display Rules (Moved up before API Authorization) -->
+            <group id="page_visibility" translate="label" type="text" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>ChatBot Visibility Per Page Type</label>
+                <comment><![CDATA[Control which storefront page types the ChatBot &amp; Assistant widget is permitted to appear on. By default, Cart and Checkout pages are disabled while other pages are enabled.<br/><br/>These page types are dynamically discovered from your Magento environment and installed extensions. The assistant is engineered to operate seamlessly without disrupting page layouts or functionality; however, you have complete freedom to disable any page type you prefer. We recommend previewing your storefront on pages where you have custom layouts or interactive workflows.]]></comment>
+
+                <field id="allowed_pages" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                    <label>Allowed Page Types</label>
+                    <frontend_model>ClusterifyAI\ChatBot\Block\Adminhtml\System\Config\Form\Field\PageVisibility</frontend_model>
+                    <backend_model>ClusterifyAI\ChatBot\Model\Config\Backend\PageVisibility</backend_model>
+                </field>
+            </group>
+
+            <!-- Clusterify API Authorization -->
+            <group id="authorization" translate="label" type="text" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Clusterify.AI API Authorization</label>
+
+                <field id="api_plan_notice" translate="label" type="label" sortOrder="5" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <frontend_model>ClusterifyAI\ChatBot\Block\Adminhtml\System\Config\Form\Field\AuthorizationNotice</frontend_model>
+                </field>
+
+                <field id="public_key" translate="label comment" type="text" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                    <label>API Public Key</label>
+                    <comment>Enter your Clusterify Public Key (pk_live_...) from Dashboard > API Keys.</comment>
+                </field>
+
+                <field id="secret_key" translate="label comment" type="obscure" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                    <label>API Secret Key</label>
+                    <backend_model>Magento\Config\Model\Config\Backend\Encrypted</backend_model>
+                    <comment>Enter your Clusterify Secret Key (sk_live_...) from Dashboard > API Keys.</comment>
+                </field>
+
+                <field id="api_base_url" translate="label comment" type="text" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                    <label>API Base URL</label>
+                    <comment>Default: https://api.clusterify.ai. Override only for testing/staging environments.</comment>
+                </field>
+
+                <field id="test_connection" translate="label" type="button" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Test API Connection</label>
+                    <frontend_model>ClusterifyAI\ChatBot\Block\Adminhtml\System\Config\Form\Field\TestConnection</frontend_model>
+                </field>
+            </group>
+
+            <!-- URL Knowledge Base Synchronization -->
+            <group id="url_knowledge_sync" translate="label" type="text" sortOrder="50" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>URL Knowledge Base Synchronization</label>
+                <comment><![CDATA[Configure automatic background synchronization of storefront pages to Clusterify.AI's deep URL-Based Assistant Knowledge Base using RabbitMQ.]]></comment>
+
+                <field id="sync_plan_notice" translate="label" type="label" sortOrder="5" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <frontend_model>ClusterifyAI\ChatBot\Block\Adminhtml\System\Config\Form\Field\SyncPlanNotice</frontend_model>
+                </field>
+
+                <field id="enabled" translate="label comment" type="select" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                    <label>Enable Knowledge Base Sync</label>
+                    <frontend_model>ClusterifyAI\ChatBot\Block\Adminhtml\System\Config\Form\Field\SyncSwitchToggle</frontend_model>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <comment>Master switch for URL Knowledge Base background synchronization. When disabled, indexers and queue consumers pause sync dispatches.</comment>
+                </field>
+
+                <field id="sync_cms" translate="label comment" type="select" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                    <label>Synchronize CMS Pages</label>
+                    <frontend_model>ClusterifyAI\ChatBot\Block\Adminhtml\System\Config\Form\Field\SyncSwitchToggle</frontend_model>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <comment>Automatically pushes content from active CMS pages (Policies, About Us, Customer Service, etc.) to Clusterify AI.</comment>
+                </field>
+
+                <field id="sync_categories" translate="label comment" type="select" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                    <label>Synchronize Category Pages</label>
+                    <frontend_model>ClusterifyAI\ChatBot\Block\Adminhtml\System\Config\Form\Field\SyncSwitchToggle</frontend_model>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <comment>Automatically pushes category descriptions and subcategory navigation hierarchies to Clusterify AI.</comment>
+                </field>
+
+                <field id="sync_products" translate="label comment" type="select" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                    <label>Synchronize Product Pages</label>
+                    <frontend_model>ClusterifyAI\ChatBot\Block\Adminhtml\System\Config\Form\Field\SyncSwitchToggle</frontend_model>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <comment>Automatically pushes product descriptions, SKUs, pricing, and stock status for individually visible products to Clusterify AI.</comment>
+                </field>
+
+                <!-- Divider 1: Separates Entity Toggles from Content & Filtering Settings -->
+                <field id="divider_after_products" translate="label" type="label" sortOrder="45" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <frontend_model>ClusterifyAI\ChatBot\Block\Adminhtml\System\Config\Form\Field\Divider</frontend_model>
+                </field>
+
+                <!-- Knowledge Attributes vs Description Setting -->
+                <field id="custom_knowledge_only" translate="label" type="select" sortOrder="50" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                    <label>Sync Custom AI Knowledge (Instead of Core Descriptions)</label>
+                    <frontend_model>ClusterifyAI\ChatBot\Block\Adminhtml\System\Config\Form\Field\SyncSwitchToggle</frontend_model>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <comment><![CDATA[Choose whether to synchronize dedicated AI training context or standard storefront descriptions to the Clusterify Knowledge Base.<br/><br/>
+                    <strong>• Yes (Recommended / Default):</strong> Synchronizes URL, Title/Name, SKU, Price/Availability (if enabled below), and the dedicated <em>ChatBot Knowledge &amp; AI Context</em> attribute instead of standard storefront HTML descriptions. If custom knowledge is empty for an entity, it safely falls back to standard descriptions.<br/>
+                    <strong>• No:</strong> Synchronizes URL, Title/Name, SKU, Price/Availability (if enabled below), and standard storefront HTML descriptions (Summary and Description).<br/><br/>
+                    <strong>⚠️ Operational Notice:</strong> Changing this setting requires running a full reindex across your indexers (<code>bin/magento indexer:reindex clusterify_chatbot_cms clusterify_chatbot_category clusterify_chatbot_product</code>) and processing queue tasks to update existing Knowledge Base entries with the new content format. This is an asynchronous background process, and the chatbot's knowledge will update progressively as the queue tasks complete.]]></comment>
+                </field>
+
+                <field id="sync_product_price" translate="label comment" type="select" sortOrder="52" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                    <label>Sync Product Price to ChatBot</label>
+                    <frontend_model>ClusterifyAI\ChatBot\Block\Adminhtml\System\Config\Form\Field\SyncSwitchToggle</frontend_model>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <comment>When enabled, formatted product prices are synchronized into the ChatBot Knowledge Base. When set to No (default), product prices are omitted from the AI context so visitors check live pricing directly on the page.</comment>
+                </field>
+
+                <field id="sync_product_availability" translate="label comment" type="select" sortOrder="54" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                    <label>Sync Product Availability (Stock Status) to ChatBot</label>
+                    <frontend_model>ClusterifyAI\ChatBot\Block\Adminhtml\System\Config\Form\Field\SyncSwitchToggle</frontend_model>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <comment>When enabled, product stock availability (In Stock / Out of Stock) is synchronized into the ChatBot Knowledge Base. When set to No (default), availability status is omitted from the AI context.</comment>
+                </field>
+
+                <field id="in_stock_only" translate="label" type="select" sortOrder="60" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                    <label>Sync In-Stock Products Only</label>
+                    <frontend_model>ClusterifyAI\ChatBot\Block\Adminhtml\System\Config\Form\Field\SyncSwitchToggle</frontend_model>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <comment><![CDATA[When enabled, out-of-stock products are automatically excluded and purged from the Clusterify Knowledge Base to conserve URL quotas.<br/><br/><strong>⚠️ Operational Notice:</strong> Changing this setting requires running a product reindex (<code>bin/magento indexer:reindex clusterify_chatbot_product</code>) and processing the queue to discover and remove previously synchronized out-of-stock items. This is an asynchronous background process, and the chatbot's catalog knowledge will update progressively as the queue tasks complete. Consider whether your shoppers benefit from the chatbot answering questions about temporarily out-of-stock items before enabling.]]></comment>
+                </field>
+
+                <!-- Divider 2: Separates Content & Filtering from Background Processing -->
+                <field id="divider_after_stock" translate="label" type="label" sortOrder="65" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <frontend_model>ClusterifyAI\ChatBot\Block\Adminhtml\System\Config\Form\Field\Divider</frontend_model>
+                </field>
+
+                <field id="queue_cron_enabled" translate="label comment" type="select" sortOrder="70" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                    <label>Automated Background Queue Processing (Cron)</label>
+                    <frontend_model>ClusterifyAI\ChatBot\Block\Adminhtml\System\Config\Form\Field\SyncSwitchToggle</frontend_model>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <comment>When enabled, Magento cron automatically drains pending RabbitMQ tasks every minute, ensuring synchronization progresses without manual CLI commands or persistent server daemons.</comment>
+                </field>
+
+                <field id="queue_batch_size" translate="label comment" type="text" sortOrder="80" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                    <label>Queue Batch Size Per Run</label>
+                    <validate>validate-digits validate-greater-than-zero</validate>
+                    <comment>Maximum number of pending messages processed per entity queue during each background cron or on-demand execution (default: 50).</comment>
+                    <depends>
+                        <field id="queue_cron_enabled">1</field>
+                    </depends>
+                </field>
+            </group>
+        </section>
+    </system>
+</config>

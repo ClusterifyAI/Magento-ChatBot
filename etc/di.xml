@@ -1,0 +1,47 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * ClusterifyAI ChatBot dependency injection configuration
+ *
+ * @category  ClusterifyAI
+ * @package   ClusterifyAI_ChatBot
+ * @author    Clusterify AI <support@clusterify.ai>
+ * @copyright Copyright (c) 2026 Clusterify AI (https://clusterify.ai)
+ * @license   MIT License
+ */
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+    <preference for="ClusterifyAI\ChatBot\Api\Data\SyncMessageInterface"
+                type="ClusterifyAI\ChatBot\Model\Queue\SyncMessage"/>
+
+    <type name="ClusterifyAI\ChatBot\Model\Sync\ProviderPool">
+        <arguments>
+            <argument name="providers" xsi:type="array">
+                <item name="cms" xsi:type="object">ClusterifyAI\ChatBot\Model\Sync\Provider\CmsDataProvider</item>
+                <item name="category" xsi:type="object">ClusterifyAI\ChatBot\Model\Sync\Provider\CategoryDataProvider</item>
+                <item name="product" xsi:type="object">ClusterifyAI\ChatBot\Model\Sync\Provider\ProductDataProvider</item>
+            </argument>
+        </arguments>
+    </type>
+
+    <type name="Magento\Framework\Console\CommandListInterface">
+        <arguments>
+            <argument name="commands" xsi:type="array">
+                <item name="clusterifyChatbotConfigShow" xsi:type="object">ClusterifyAI\ChatBot\Console\Command\ConfigShowCommand</item>
+                <item name="clusterifyChatbotConfigSet" xsi:type="object">ClusterifyAI\ChatBot\Console\Command\ConfigSetCommand</item>
+                <item name="clusterifyChatbotTestConnection" xsi:type="object">ClusterifyAI\ChatBot\Console\Command\TestConnectionCommand</item>
+                <item name="clusterifyChatbotPageTypeVisibilityList" xsi:type="object">ClusterifyAI\ChatBot\Console\Command\PageTypeVisibilityListCommand</item>
+                <item name="clusterifyChatbotPageTypeVisibilitySet" xsi:type="object">ClusterifyAI\ChatBot\Console\Command\PageTypeVisibilitySetCommand</item>
+                <item name="clusterifyChatbotPageTypeVisibilityReset" xsi:type="object">ClusterifyAI\ChatBot\Console\Command\PageTypeVisibilityResetCommand</item>
+                <item name="clusterifyChatbotSyncStatus" xsi:type="object">ClusterifyAI\ChatBot\Console\Command\SyncStatusCommand</item>
+                <item name="clusterifyChatbotSyncRun" xsi:type="object">ClusterifyAI\ChatBot\Console\Command\SyncRunCommand</item>
+                <item name="clusterifyChatbotSyncConsume" xsi:type="object">ClusterifyAI\ChatBot\Console\Command\SyncConsumeCommand</item>
+            </argument>
+        </arguments>
+    </type>
+    <type name="Magento\Catalog\Model\Product\Action">
+        <plugin name="clusterify_chatbot_product_mass_attribute_update"
+                type="ClusterifyAI\ChatBot\Plugin\Catalog\ProductActionPlugin"/>
+    </type>
+</config>

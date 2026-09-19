@@ -1,0 +1,573 @@
+<?php
+/**
+ * ClusterifyAI ChatBot admin important information guide template
+ *
+ * @category  ClusterifyAI
+ * @package   ClusterifyAI_ChatBot
+ * @author    Clusterify AI <support@clusterify.ai>
+ * @copyright Copyright (c) 2026 Clusterify AI (https://clusterify.ai)
+ * @license   MIT License
+ *
+ * @var \ClusterifyAI\ChatBot\Block\Adminhtml\Info\Guide $block
+ * @var \Magento\Framework\Escaper $escaper
+ */
+
+$version = $block->getExtensionVersion();
+?>
+<style type="text/css">
+.clusterify-guide-container {
+    max-width: 1200px;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    color: #1e293b;
+    line-height: 1.6;
+}
+.clusterify-guide-container a[target='_blank']:after {
+    content: '\e644';
+    font-family: 'Admin Icons';
+    font-size: 1.1rem;
+    vertical-align: middle;
+    margin-left: 6px;
+    display: inline-block;
+    line-height: 1;
+    opacity: 0.85;
+}
+.clusterify-card {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 24px;
+    margin-bottom: 24px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+}
+.clusterify-card-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 16px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid #f1f5f9;
+}
+.clusterify-card-header h3 {
+    margin: 0;
+    font-size: 17px;
+    font-weight: 700;
+    color: #0f172a;
+}
+.clusterify-badge-blue {
+    background: #e0f2fe;
+    color: #0284c7;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 2px 10px;
+    border-radius: 12px;
+    text-transform: uppercase;
+}
+.clusterify-badge-green {
+    background: #dcfce7;
+    color: #166534;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 2px 10px;
+    border-radius: 12px;
+    text-transform: uppercase;
+}
+.clusterify-badge-amber {
+    background: #fef3c7;
+    color: #92400e;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 2px 10px;
+    border-radius: 12px;
+    text-transform: uppercase;
+}
+.clusterify-nav-pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 24px;
+    padding: 14px 18px;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+}
+.clusterify-nav-pills a {
+    display: inline-block;
+    padding: 6px 12px;
+    background: #ffffff;
+    border: 1px solid #cbd5e1;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 600;
+    color: #334155;
+    text-decoration: none;
+    transition: all 0.15s ease;
+}
+.clusterify-nav-pills a:hover {
+    background: #0284c7;
+    color: #ffffff;
+    border-color: #0284c7;
+    text-decoration: none;
+}
+.clusterify-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 16px 0;
+    font-size: 13px;
+}
+.clusterify-table th {
+    background: #f8fafc;
+    padding: 10px 14px;
+    border: 1px solid #e2e8f0;
+    font-weight: 600;
+    text-align: left;
+    color: #0f172a;
+}
+.clusterify-table td {
+    padding: 10px 14px;
+    border: 1px solid #e2e8f0;
+    color: #334155;
+    vertical-align: top;
+}
+.clusterify-tip-box {
+    background: #f0f9ff;
+    border-left: 4px solid #0284c7;
+    padding: 14px 18px;
+    border-radius: 4px;
+    margin: 14px 0;
+    font-size: 13px;
+    color: #0369a1;
+}
+.clusterify-warning-box {
+    background: #fffbeb;
+    border-left: 4px solid #f59e0b;
+    padding: 14px 18px;
+    border-radius: 4px;
+    margin: 14px 0;
+    font-size: 13px;
+    color: #92400e;
+}
+.clusterify-lifesaver-box {
+    background: #ecfdf5;
+    border: 1px solid #a7f3d0;
+    border-left: 4px solid #10b981;
+    padding: 16px 20px;
+    border-radius: 6px;
+    margin: 16px 0;
+    color: #065f46;
+}
+.clusterify-portal-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 16px;
+    margin-top: 14px;
+}
+.clusterify-portal-card {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+.clusterify-portal-card h4 {
+    margin: 0 0 6px 0;
+    font-size: 14px;
+    font-weight: 700;
+    color: #0f172a;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+.clusterify-portal-card p {
+    font-size: 12px;
+    color: #475569;
+    margin: 0 0 12px 0;
+    line-height: 1.5;
+}
+.clusterify-portal-card a.action-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 7px 14px;
+    background: #0284c7;
+    color: #ffffff;
+    font-size: 12px;
+    font-weight: 600;
+    text-decoration: none;
+    border-radius: 4px;
+    width: fit-content;
+}
+.clusterify-portal-card a.action-btn:hover {
+    background: #0369a1;
+}
+</style>
+
+<div class="clusterify-guide-container">
+
+    <!-- Top Action Bar -->
+    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; margin-bottom: 20px; padding-bottom: 16px; border-bottom: 1px solid #e2e8f0;">
+        <div>
+            <h2 style="margin: 0; font-size: 20px; font-weight: 700; color: #0f172a; display: flex; align-items: center; gap: 8px;">
+                <?= $escaper->escapeHtml(__('Clusterify.AI ChatBot & Assistant — Important Information & Merchant Guide')) ?>
+                <span style="background: #e0f2fe; color: #0369a1; font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 10px;">
+                    v<?= $escaper->escapeHtml($version) ?>
+                </span>
+            </h2>
+            <div style="font-size: 12px; color: #64748b; margin-top: 4px;">
+                <?= $escaper->escapeHtml(__('Essential concepts, training recommendations, and operational rules to maximize your AI assistant\'s sales performance.')) ?>
+            </div>
+        </div>
+        <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+            <a href="<?= $escaper->escapeUrl($block->getStatusUrl()) ?>" class="action-secondary" style="font-size: 12px; padding: 6px 14px;">
+                <?= $escaper->escapeHtml(__('Dashboard & Status')) ?>
+            </a>
+            <a href="<?= $escaper->escapeUrl($block->getConfigUrl()) ?>" class="action-secondary" style="font-size: 12px; padding: 6px 14px;">
+                <?= $escaper->escapeHtml(__('Configure Extension')) ?>
+            </a>
+            <a href="<?= $escaper->escapeUrl($block->getDashboardUrl()) ?>" target="_blank" rel="noopener noreferrer" class="action-primary" style="font-size: 12px; padding: 6px 14px; background: #0284c7; border-color: #0284c7;">
+                <?= $escaper->escapeHtml(__('Clusterify Cloud Portal')) ?>
+            </a>
+        </div>
+    </div>
+
+    <!-- Quick Navigation Jump Bar -->
+    <div class="clusterify-nav-pills">
+        <a href="#how-to-make-smarter">🧠 <?= $escaper->escapeHtml(__('How to Make Chatbot Smarter')) ?></a>
+        <a href="#general-knowledge-base">🛡️ <?= $escaper->escapeHtml(__('General Knowledge (Lifesaver)')) ?></a>
+        <a href="#how-it-works">⚙️ <?= $escaper->escapeHtml(__('How It Works')) ?></a>
+        <a href="#pages-and-attributes">📋 <?= $escaper->escapeHtml(__('Synced Pages & Attributes')) ?></a>
+        <a href="#important-rules">⚠️ <?= $escaper->escapeHtml(__('Important Operational Rules')) ?></a>
+        <a href="#credentials">🔑 <?= $escaper->escapeHtml(__('Credentials & Keys')) ?></a>
+        <a href="#customizing-chatbot">🎨 <?= $escaper->escapeHtml(__('Customizing Appearance')) ?></a>
+        <a href="#visual-tools">🛠️ <?= $escaper->escapeHtml(__('Interactive Tools & Forms')) ?></a>
+    </div>
+
+    <!-- Card 1: How Can I Make My Chatbot Smarter? -->
+    <div class="clusterify-card" id="how-to-make-smarter">
+        <div class="clusterify-card-header">
+            <span style="font-size: 22px;">🧠</span>
+            <div>
+                <h3><?= $escaper->escapeHtml(__('How Can I Make My Chatbot / Assistant Smarter?')) ?></h3>
+                <span class="clusterify-badge-blue"><?= $escaper->escapeHtml(__('Training & Content Quality')) ?></span>
+            </div>
+        </div>
+
+        <p>
+            <?= $escaper->escapeHtml(__('An AI shopping assistant is only as good as the information it is provided. While standard e-commerce copy is written for human eyes casually glancing at photos, an AI assistant needs explicit sales arguments, sizing nuances, and practical answers to remove customer doubt and drive checkout conversions.')) ?>
+        </p>
+
+        <div class="clusterify-tip-box">
+            <strong>💡 <?= $escaper->escapeHtml(__('Use the Dedicated "ChatBot Knowledge & AI Context" Field:')) ?></strong><br>
+            <?= $escaper->escapeHtml(__('Instead of cluttering your visual product descriptions with long text, use the dedicated')) ?>
+            <strong><code>clusterify_chatbot_knowledge</code></strong>
+            <?= $escaper->escapeHtml(__('attribute located under the "Clusterify AI ChatBot" section on Product, Category, and CMS edit screens (up to 20,000 characters).')) ?>
+        </div>
+
+        <h4 style="margin: 16px 0 8px 0; color: #0f172a; font-size: 14px;"><?= $escaper->escapeHtml(__('Recommended Information Structure:')) ?></h4>
+        <ul style="padding-left: 20px; font-size: 13px; color: #334155; line-height: 1.7;">
+            <li><strong>1. Value Proposition &amp; Sales Arguments ("Why Buy?"):</strong> <?= $escaper->escapeHtml(__('Directly state the top reasons a customer should buy this item over alternatives (key differentiators, premium craftsmanship, customer benefits, target audience).')) ?></li>
+            <li><strong>2. Detailed Nuances &amp; Fit Advice:</strong> <?= $escaper->escapeHtml(__('Provide sizing specifics (e.g. "Runs 1/2 size small, recommend sizing up if in-between"), material texture, seasonal warmth, or real-world ergonomics that are not stated in the bullet points.')) ?></li>
+            <li><strong>3. Frequently Asked Questions (Pre-Sales FAQs):</strong> <?= $escaper->escapeHtml(__('Preemptively answer common buyer doubts (e.g. "Is it waterproof?", "Does it come assembled?", "How to wash and care?").')) ?></li>
+            <li><strong>4. Cross-Sell &amp; Bundling Recommendations:</strong> <?= $escaper->escapeHtml(__('Tell the AI which accessories or matching products pair best with this item (e.g. "Pairs perfectly with [Matching Pants Name] for a complete athletic set").')) ?></li>
+        </ul>
+    </div>
+
+    <!-- Card 2: What is the General Knowledge Base For? (The Lifesaver) -->
+    <div class="clusterify-card" id="general-knowledge-base">
+        <div class="clusterify-card-header">
+            <span style="font-size: 22px;">🛡️</span>
+            <div>
+                <h3><?= $escaper->escapeHtml(__('What is the General Knowledge Base For? (In the Clusterify.AI Dashboard)')) ?></h3>
+                <span class="clusterify-badge-green"><?= $escaper->escapeHtml(__('Storewide Intelligence')) ?></span>
+            </div>
+        </div>
+
+        <p>
+            <?= $escaper->escapeHtml(__('While this Magento extension synchronizes individual page URLs (products, categories, CMS), the')) ?>
+            <strong><?= $escaper->escapeHtml(__('General Knowledge Base')) ?></strong>
+            <?= $escaper->escapeHtml(__('in your Clusterify Cloud Dashboard is where you store global, sitewide business intelligence that applies across the entire store.')) ?>
+        </p>
+
+        <div class="clusterify-lifesaver-box">
+            <h4 style="margin: 0 0 6px 0; color: #065f46; font-size: 14px; font-weight: 700;">
+                ⭐ <?= $escaper->escapeHtml(__('Why the General Knowledge Base is a Lifesaver:')) ?>
+            </h4>
+            <p style="margin: 0; font-size: 13px; line-height: 1.6;">
+                <?= $escaper->escapeHtml(__('When a visitor is browsing a brand-new product, an unindexed page, or asks a broad storewide question (e.g. "Can I return this if it doesn\'t fit?" or "What are your shipping rates to Canada?"), the assistant immediately draws from the General Knowledge Base to provide an accurate, confident answer instead of saying "I don\'t know". It serves as an unshakeable safety net for your store!')) ?>
+            </p>
+        </div>
+
+        <h4 style="margin: 16px 0 8px 0; color: #0f172a; font-size: 14px;"><?= $escaper->escapeHtml(__('What Should You Add to General Knowledge?')) ?></h4>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 12px; font-size: 12px;">
+            <div style="background: #f8fafc; padding: 12px; border: 1px solid #e2e8f0; border-radius: 6px;">
+                <strong>📦 <?= $escaper->escapeHtml(__('Shipping & Delivery:')) ?></strong><br>
+                <?= $escaper->escapeHtml(__('Carriers, delivery estimates, cutoff times, free shipping thresholds, international restrictions.')) ?>
+            </div>
+            <div style="background: #f8fafc; padding: 12px; border: 1px solid #e2e8f0; border-radius: 6px;">
+                <strong>🔄 <?= $escaper->escapeHtml(__('Returns & Exchanges:')) ?></strong><br>
+                <?= $escaper->escapeHtml(__('Return window (e.g. 30 days), prepaid return label availability, refund processing times, exchange process.')) ?>
+            </div>
+            <div style="background: #f8fafc; padding: 12px; border: 1px solid #e2e8f0; border-radius: 6px;">
+                <strong>💳 <?= $escaper->escapeHtml(__('Payment & Security:')) ?></strong><br>
+                <?= $escaper->escapeHtml(__('Accepted credit cards, PayPal, Klarna/Afterpay installment rules, security encryption.')) ?>
+            </div>
+            <div style="background: #f8fafc; padding: 12px; border: 1px solid #e2e8f0; border-radius: 6px;">
+                <strong>📞 <?= $escaper->escapeHtml(__('Customer Support Contacts:')) ?></strong><br>
+                <?= $escaper->escapeHtml(__('Support hours, email address, phone number, physical address, average response time.')) ?>
+            </div>
+        </div>
+
+        <div style="margin-top: 16px;">
+            <a href="<?= $escaper->escapeUrl($block->getDashboardUrl()) ?>" target="_blank" rel="noopener noreferrer" style="color: #0284c7; font-weight: 700; text-decoration: underline; font-size: 13px;">
+                <?= $escaper->escapeHtml(__('Open Clusterify Dashboard to Manage General Knowledge')) ?>
+            </a>
+        </div>
+    </div>
+
+    <!-- Card 3: How It Works -->
+    <div class="clusterify-card" id="how-it-works">
+        <div class="clusterify-card-header">
+            <span style="font-size: 22px;">⚙️</span>
+            <div>
+                <h3><?= $escaper->escapeHtml(__('How Does the Synchronization Work?')) ?></h3>
+                <span class="clusterify-badge-blue"><?= $escaper->escapeHtml(__('Asynchronous Architecture')) ?></span>
+            </div>
+        </div>
+
+        <p>
+            <?= $escaper->escapeHtml(__('The extension uses an enterprise-grade asynchronous pipeline designed to never slow down customer checkout or lock database tables:')) ?>
+        </p>
+
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 12px; margin: 16px 0;">
+            <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; padding: 14px;">
+                <div style="font-size: 12px; font-weight: 700; color: #0284c7; margin-bottom: 4px;">1. <?= $escaper->escapeHtml(__('Change Detected')) ?></div>
+                <div style="font-size: 12px; color: #475569;"><?= $escaper->escapeHtml(__('An administrator or ERP saves a product, category, or CMS page. Observers and Mview changelogs record the ID immediately.')) ?></div>
+            </div>
+            <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; padding: 14px;">
+                <div style="font-size: 12px; font-weight: 700; color: #0284c7; margin-bottom: 4px;">2. <?= $escaper->escapeHtml(__('Queued to RabbitMQ')) ?></div>
+                <div style="font-size: 12px; color: #475569;"><?= $escaper->escapeHtml(__('Lightweight sync tasks are enqueued to RabbitMQ topics in chunks of 100 with zero external API delay.')) ?></div>
+            </div>
+            <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; padding: 14px;">
+                <div style="font-size: 12px; font-weight: 700; color: #0284c7; margin-bottom: 4px;">3. <?= $escaper->escapeHtml(__('Background Processing')) ?></div>
+                <div style="font-size: 12px; color: #475569;"><?= $escaper->escapeHtml(__('Smart queue consumers extract metadata, convert HTML to clean Markdown, and dispatch updates with 300ms throttling.')) ?></div>
+            </div>
+            <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; padding: 14px;">
+                <div style="font-size: 12px; font-weight: 700; color: #0284c7; margin-bottom: 4px;">4. <?= $escaper->escapeHtml(__('Live AI Adoption')) ?></div>
+                <div style="font-size: 12px; color: #475569;"><?= $escaper->escapeHtml(__('Clusterify AI generates embeddings and incorporates the knowledge immediately into your storefront assistant.')) ?></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Card 4: What Pages & Attributes are Synced? -->
+    <div class="clusterify-card" id="pages-and-attributes">
+        <div class="clusterify-card-header">
+            <span style="font-size: 22px;">📋</span>
+            <div>
+                <h3><?= $escaper->escapeHtml(__('What Pages & Attributes are Synced? (Per Page Type Breakdown)')) ?></h3>
+                <span class="clusterify-badge-green"><?= $escaper->escapeHtml(__('Data Schema')) ?></span>
+            </div>
+        </div>
+
+        <p><?= $escaper->escapeHtml(__('The table below details exactly which fields are extracted and synchronized for each page type:')) ?></p>
+
+        <table class="clusterify-table">
+            <thead>
+                <tr>
+                    <th style="width: 18%;"><?= $escaper->escapeHtml(__('Page Type')) ?></th>
+                    <th style="width: 41%;"><?= $escaper->escapeHtml(__('When "Sync Custom AI Knowledge" = Yes (Default)')) ?></th>
+                    <th style="width: 41%;"><?= $escaper->escapeHtml(__('When "Sync Custom AI Knowledge" = No')) ?></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong><?= $escaper->escapeHtml(__('Products')) ?></strong></td>
+                    <td>
+                        • Canonical Product URL<br>
+                        • Product Title / Name<br>
+                        • SKU<br>
+                        • Formatted Price <span style="background: #f1f5f9; color: #64748b; font-size: 10px; font-weight: 600; padding: 1px 6px; border-radius: 4px; margin-left: 4px;"><?= $escaper->escapeHtml(__('Optional, see Configuration')) ?></span><br>
+                        • Availability (In Stock / Out of Stock) <span style="background: #f1f5f9; color: #64748b; font-size: 10px; font-weight: 600; padding: 1px 6px; border-radius: 4px; margin-left: 4px;"><?= $escaper->escapeHtml(__('Optional, see Configuration')) ?></span><br>
+                        • Configurable Variant Options (Sizes, Colors)<br>
+                        • <strong>Dedicated AI Knowledge Context</strong> (<em>clusterify_chatbot_knowledge</em>)<br>
+                        <span style="color: #64748b; font-size: 11px;">(Standard HTML descriptions are omitted. If custom knowledge is blank, it automatically falls back to standard descriptions).</span>
+                    </td>
+                    <td>
+                        • Canonical Product URL<br>
+                        • Product Title / Name<br>
+                        • SKU<br>
+                        • Formatted Price <span style="background: #f1f5f9; color: #64748b; font-size: 10px; font-weight: 600; padding: 1px 6px; border-radius: 4px; margin-left: 4px;"><?= $escaper->escapeHtml(__('Optional, see Configuration')) ?></span><br>
+                        • Availability (In Stock / Out of Stock) <span style="background: #f1f5f9; color: #64748b; font-size: 10px; font-weight: 600; padding: 1px 6px; border-radius: 4px; margin-left: 4px;"><?= $escaper->escapeHtml(__('Optional, see Configuration')) ?></span><br>
+                        • Configurable Variant Options<br>
+                        • <strong>Standard Storefront HTML Descriptions</strong> (Summary and Description)<br>
+                        <span style="color: #64748b; font-size: 11px;">(Custom knowledge context is appended if populated).</span>
+                    </td>
+                </tr>
+                <tr>
+                    <td><strong><?= $escaper->escapeHtml(__('Categories')) ?></strong></td>
+                    <td>
+                        • Category URL<br>
+                        • Category Name<br>
+                        • Active Subcategories Tree<br>
+                        • <strong>Dedicated AI Knowledge Context</strong> (<em>clusterify_chatbot_knowledge</em>)<br>
+                        <span style="color: #64748b; font-size: 11px;">(Category HTML description is omitted unless custom knowledge is blank).</span>
+                    </td>
+                    <td>
+                        • Category URL<br>
+                        • Category Name<br>
+                        • Active Subcategories Tree<br>
+                        • <strong>Category Storefront HTML Description</strong><br>
+                        <span style="color: #64748b; font-size: 11px;">(Custom knowledge context is appended if populated).</span>
+                    </td>
+                </tr>
+                <tr>
+                    <td><strong><?= $escaper->escapeHtml(__('CMS Pages')) ?></strong></td>
+                    <td>
+                        • Page URL (canonical, omitting .html suffix)<br>
+                        • Page Title<br>
+                        • <strong>Dedicated AI Knowledge Context</strong> (<em>clusterify_chatbot_knowledge</em>)<br>
+                        <span style="color: #64748b; font-size: 11px;">(Page HTML content is omitted unless custom knowledge is blank).</span>
+                    </td>
+                    <td>
+                        • Page URL<br>
+                        • Page Title<br>
+                        • <strong>Standard CMS Page Content</strong> (sanitized Markdown)<br>
+                        <span style="color: #64748b; font-size: 11px;">(Custom knowledge context is appended if populated).</span>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Card 5: Important Operational Rules -->
+    <div class="clusterify-card" id="important-rules">
+        <div class="clusterify-card-header">
+            <span style="font-size: 22px;">⚠️</span>
+            <div>
+                <h3><?= $escaper->escapeHtml(__('Important Operational Rules & Best Practices')) ?></h3>
+                <span class="clusterify-badge-amber"><?= $escaper->escapeHtml(__('Must-Know Rules')) ?></span>
+            </div>
+        </div>
+
+        <div class="clusterify-warning-box">
+            <strong>1. <?= $escaper->escapeHtml(__('Inventory Availability & Out-of-Stock Quota Optimization:')) ?></strong><br>
+            <?= $escaper->escapeHtml(__('When "Sync In-Stock Products Only" is enabled, any product that goes out-of-stock emits an explicit deletion action to purge its URL from Clusterify, conserving your URL quotas.')) ?><br><br>
+            <strong>⚠️ <?= $escaper->escapeHtml(__('Reindex Requirement:')) ?></strong>
+            <?= $escaper->escapeHtml(__('If you switch "Sync In-Stock Products Only" from No to Yes at a later time, existing out-of-stock products already synced to Clusterify will NOT be deleted automatically upon saving configuration. You MUST run a product reindex:')) ?>
+            <br>
+            <code>bin/magento indexer:reindex clusterify_chatbot_product</code>
+            <br>
+            <?= $escaper->escapeHtml(__('and process the queue tasks to discover and purge previously synchronized out-of-stock items.')) ?>
+        </div>
+
+        <div class="clusterify-tip-box">
+            <strong>2. <?= $escaper->escapeHtml(__('Dedicated Attribute vs. Core Descriptions:')) ?></strong><br>
+            <?= $escaper->escapeHtml(__('The "Sync Custom AI Knowledge (Instead of Core Descriptions)" switch determines whether your assistant ingests dedicated marketing copy or standard HTML descriptions. We recommend leaving this set to Yes, because dedicated AI context gives the chatbot concise, high-converting answers while saving significant character tokens. Built-in fallback ensures products with empty custom knowledge still sync their standard descriptions.')) ?>
+        </div>
+
+        <div class="clusterify-tip-box">
+            <strong>3. <?= $escaper->escapeHtml(__('Understanding Queue Processing (Why Active Consumers Shows 0):')) ?></strong><br>
+            <?= $escaper->escapeHtml(__('When "Active Consumers" shows 0 on the Status page, tasks remain safely staged in RabbitMQ until consumed. In production, tasks are processed automatically every minute via Magento cron (* * * * * bin/magento cron:run). You can also drain tasks immediately using the "⚡ Process Pending Tasks Now" button on the Status page or via CLI:')) ?>
+            <br>
+            <code>bin/magento clusterify:chatbot:sync:consume</code>
+        </div>
+    </div>
+
+    <!-- Card 6: Where to Get Credentials -->
+    <div class="clusterify-card" id="credentials">
+        <div class="clusterify-card-header">
+            <span style="font-size: 22px;">🔑</span>
+            <div>
+                <h3><?= $escaper->escapeHtml(__('Where Can I Get My Chatbot\'s Credentials?')) ?></h3>
+                <span class="clusterify-badge-blue"><?= $escaper->escapeHtml(__('Authentication')) ?></span>
+            </div>
+        </div>
+
+        <div class="clusterify-portal-grid">
+            <div class="clusterify-portal-card">
+                <div>
+                    <h4>🆔 <?= $escaper->escapeHtml(__('ChatBot Public UUID')) ?></h4>
+                    <p><?= $escaper->escapeHtml(__('Identifies your visual chatbot widget and authorizes your storefront domain. This token is safe to expose in HTML. Enter it under General Configuration.')) ?></p>
+                </div>
+                <a href="<?= $escaper->escapeUrl($block->getChatbotUrl()) ?>" target="_blank" rel="noopener noreferrer" class="action-btn">
+                    <?= $escaper->escapeHtml(__('Get Public UUID in Dashboard')) ?>
+                </a>
+            </div>
+
+            <div class="clusterify-portal-card">
+                <div>
+                    <h4>🔐 <?= $escaper->escapeHtml(__('API Public & Secret Keys')) ?></h4>
+                    <p><?= $escaper->escapeHtml(__('Required for deep URL Knowledge Base synchronization and live status health checks. Your Secret Key is encrypted in the Magento database.')) ?></p>
+                </div>
+                <a href="<?= $escaper->escapeUrl($block->getApiKeysUrl()) ?>" target="_blank" rel="noopener noreferrer" class="action-btn">
+                    <?= $escaper->escapeHtml(__('Manage API Keys in Dashboard')) ?>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Card 7: Customizing the Chatbot Appearance -->
+    <div class="clusterify-card" id="customizing-chatbot">
+        <div class="clusterify-card-header">
+            <span style="font-size: 22px;">🎨</span>
+            <div>
+                <h3><?= $escaper->escapeHtml(__('Where Can You Customize the Chatbot Appearance?')) ?></h3>
+                <span class="clusterify-badge-green"><?= $escaper->escapeHtml(__('Branding & Styling')) ?></span>
+            </div>
+        </div>
+
+        <p><?= $escaper->escapeHtml(__('You have complete creative control over your assistant\'s visual presentation directly in the Clusterify.AI Cloud Dashboard without editing CSS:')) ?></p>
+
+        <div class="clusterify-portal-grid">
+            <div class="clusterify-portal-card">
+                <div>
+                    <h4>💬 <?= $escaper->escapeHtml(__('Bubble Button Builder')) ?></h4>
+                    <p><?= $escaper->escapeHtml(__('Customize the floating launcher button on your storefront: choose button colors, positioning (bottom-right vs bottom-left), badge callout text, custom icons, and entrance animation.')) ?></p>
+                </div>
+                <a href="<?= $escaper->escapeUrl($block->getBubbleBuilderUrl()) ?>" target="_blank" rel="noopener noreferrer" class="action-btn">
+                    <?= $escaper->escapeHtml(__('Open Bubble Builder')) ?>
+                </a>
+            </div>
+
+            <div class="clusterify-portal-card">
+                <div>
+                    <h4>🪟 <?= $escaper->escapeHtml(__('Chatbot Window Builder')) ?></h4>
+                    <p><?= $escaper->escapeHtml(__('Style the chat window: brand primary/secondary colors, assistant avatar, header titles, initial welcome message, starter conversation suggestion chips, and disclaimer notices.')) ?></p>
+                </div>
+                <a href="<?= $escaper->escapeUrl($block->getChatbotBuilderUrl()) ?>" target="_blank" rel="noopener noreferrer" class="action-btn">
+                    <?= $escaper->escapeHtml(__('Open Window Builder')) ?>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Card 8: Visual Tools, Interactive Cards & Forms -->
+    <div class="clusterify-card" id="visual-tools">
+        <div class="clusterify-card-header">
+            <span style="font-size: 22px;">🛠️</span>
+            <div>
+                <h3><?= $escaper->escapeHtml(__('Chatbot Visual Tools, Interactive Cards & Lead Capture')) ?></h3>
+                <span class="clusterify-badge-blue"><?= $escaper->escapeHtml(__('Behaviors & Conversions')) ?></span>
+            </div>
+        </div>
+
+        <p><?= $escaper->escapeHtml(__('Empower your assistant to do more than answer text questions. With Clusterify\'s visual behavioral tools, you can configure rich interactive elements inside the conversation:')) ?></p>
+
+        <div class="clusterify-portal-grid">
+            <div class="clusterify-portal-card" style="grid-column: 1 / -1;">
+                <div>
+                    <h4>⚡ <?= $escaper->escapeHtml(__('Interactive Behaviors & Conversational Tools')) ?></h4>
+                    <p>
+                        • <strong><?= $escaper->escapeHtml(__('Product Recommendation Cards:')) ?></strong> <?= $escaper->escapeHtml(__('Display rich product previews with images, live prices, and direct "Add to Cart" / view links.')) ?><br>
+                        • <strong><?= $escaper->escapeHtml(__('Clickable Quick-Action Links:')) ?></strong> <?= $escaper->escapeHtml(__('Guide shoppers to specific category promotions, size guides, or order tracking pages.')) ?><br>
+                        • <strong><?= $escaper->escapeHtml(__('Interactive Contact & Lead Forms:')) ?></strong> <?= $escaper->escapeHtml(__('Capture customer emails, support tickets, or callback requests directly within the chat window when complex human assistance is required.')) ?>
+                    </p>
+                </div>
+                <a href="<?= $escaper->escapeUrl($block->getChatbotBehavingUrl()) ?>" target="_blank" rel="noopener noreferrer" class="action-btn">
+                    <?= $escaper->escapeHtml(__('Configure Visual Tools & Behaviors')) ?>
+                </a>
+            </div>
+        </div>
+    </div>
+
+</div>

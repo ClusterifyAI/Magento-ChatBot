@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * ClusterifyAI ChatBot storefront layout injection
+ *
+ * @category  ClusterifyAI
+ * @package   ClusterifyAI_ChatBot
+ * @author    Clusterify AI <support@clusterify.ai>
+ * @copyright Copyright (c) 2026 Clusterify AI (https://clusterify.ai)
+ * @license   MIT License
+ */
+-->
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <body>
+        <referenceContainer name="before.body.end">
+            <block class="ClusterifyAI\ChatBot\Block\ChatbotSnippet"
+                   name="clusterify.chatbot.snippet"
+                   template="ClusterifyAI_ChatBot::chatbot_snippet.phtml" />
+        </referenceContainer>
+    </body>
+</page>

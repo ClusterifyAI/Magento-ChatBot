@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * ClusterifyAI ChatBot adminhtml dependency injection configuration
+ *
+ * @category  ClusterifyAI
+ * @package   ClusterifyAI_ChatBot
+ * @author    Clusterify AI <support@clusterify.ai>
+ * @copyright Copyright (c) 2026 Clusterify AI (https://clusterify.ai)
+ * @license   MIT License
+ */
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+    <virtualType name="Magento\Catalog\Ui\DataProvider\Product\Form\Modifier\Pool">
+        <arguments>
+            <argument name="modifiers" xsi:type="array">
+                <item name="clusterify_chatbot_knowledge_notice" xsi:type="array">
+                    <item name="class" xsi:type="string">ClusterifyAI\ChatBot\Ui\DataProvider\Product\Form\Modifier\KnowledgeAttributeNotice</item>
+                    <item name="sortOrder" xsi:type="number">200</item>
+                </item>
+            </argument>
+        </arguments>
+    </virtualType>
+</config>

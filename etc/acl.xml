@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * ClusterifyAI ChatBot Access Control List (ACL) definition
+ *
+ * @category  ClusterifyAI
+ * @package   ClusterifyAI_ChatBot
+ * @author    Clusterify AI <support@clusterify.ai>
+ * @copyright Copyright (c) 2026 Clusterify AI (https://clusterify.ai)
+ * @license   MIT License
+ */
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:framework:Acl/etc/acl.xsd">
+    <acl>
+        <resources>
+            <resource id="Magento_Backend::admin">
+                <resource id="Magento_Backend::marketing">
+                    <resource id="ClusterifyAI_ChatBot::status"
+                              title="Clusterify.AI Chatbot &amp; Assistant Status"
+                              sortOrder="50" />
+                </resource>
+                <resource id="Magento_Backend::stores">
+                    <resource id="Magento_Backend::stores_settings">
+                        <resource id="Magento_Config::config">
+                            <resource id="ClusterifyAI_ChatBot::config"
+                                      title="Clusterify.AI ChatBot &amp; Assistant Configuration"
+                                      sortOrder="50" />
+                        </resource>
+                    </resource>
+                </resource>
+            </resource>
+        </resources>
+    </acl>
+</config>

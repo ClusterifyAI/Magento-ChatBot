@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * ClusterifyAI ChatBot admin router configuration
+ *
+ * @category  ClusterifyAI
+ * @package   ClusterifyAI_ChatBot
+ * @author    Clusterify AI <support@clusterify.ai>
+ * @copyright Copyright (c) 2026 Clusterify AI (https://clusterify.ai)
+ * @license   MIT License
+ */
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:framework:App/etc/routes.xsd">
+    <router id="admin">
+        <route id="clusterify_chatbot" frontName="clusterify_chatbot">
+            <module name="ClusterifyAI_ChatBot" before="Magento_Backend"/>
+        </route>
+    </router>
+</config>

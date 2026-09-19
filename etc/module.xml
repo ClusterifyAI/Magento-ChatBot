@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * ClusterifyAI ChatBot module declaration
+ *
+ * @category  ClusterifyAI
+ * @package   ClusterifyAI_ChatBot
+ * @author    Clusterify AI <support@clusterify.ai>
+ * @copyright Copyright (c) 2026 Clusterify AI (https://clusterify.ai)
+ * @license   MIT License
+ */
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:framework:Module/etc/module.xsd">
+    <module name="ClusterifyAI_ChatBot" setup_version="1.0.0">
+        <sequence>
+            <module name="Magento_Backend"/>
+            <module name="Magento_Config"/>
+            <module name="Magento_Store"/>
+            <module name="Magento_Cms"/>
+            <module name="Magento_Catalog"/>
+            <module name="Magento_CatalogInventory"/>
+            <module name="Magento_Indexer"/>
+        </sequence>
+    </module>
+</config>

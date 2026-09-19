@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * ClusterifyAI ChatBot queue topology configuration
+ *
+ * @category  ClusterifyAI
+ * @package   ClusterifyAI_ChatBot
+ * @author    Clusterify AI <support@clusterify.ai>
+ * @copyright Copyright (c) 2026 Clusterify AI (https://clusterify.ai)
+ * @license   MIT License
+ */
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:framework-message-queue:etc/topology.xsd">
+    <exchange name="magento" type="topic" connection="amqp">
+        <binding id="ClusterifyChatbotSyncCms"
+                 topic="clusterify.chatbot.sync.cms"
+                 destinationType="queue"
+                 destination="clusterify.chatbot.sync.cms"/>
+        <binding id="ClusterifyChatbotSyncCategory"
+                 topic="clusterify.chatbot.sync.category"
+                 destinationType="queue"
+                 destination="clusterify.chatbot.sync.category"/>
+        <binding id="ClusterifyChatbotSyncProduct"
+                 topic="clusterify.chatbot.sync.product"
+                 destinationType="queue"
+                 destination="clusterify.chatbot.sync.product"/>
+    </exchange>
+</config>

@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * ClusterifyAI ChatBot message queue communication configuration
+ *
+ * @category  ClusterifyAI
+ * @package   ClusterifyAI_ChatBot
+ * @author    Clusterify AI <support@clusterify.ai>
+ * @copyright Copyright (c) 2026 Clusterify AI (https://clusterify.ai)
+ * @license   MIT License
+ */
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:framework:Communication/etc/communication.xsd">
+    <topic name="clusterify.chatbot.sync.cms" is_synchronous="false" request="ClusterifyAI\ChatBot\Api\Data\SyncMessageInterface"/>
+    <topic name="clusterify.chatbot.sync.category" is_synchronous="false" request="ClusterifyAI\ChatBot\Api\Data\SyncMessageInterface"/>
+    <topic name="clusterify.chatbot.sync.product" is_synchronous="false" request="ClusterifyAI\ChatBot\Api\Data\SyncMessageInterface"/>
+</config>

@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * ClusterifyAI ChatBot admin important information guide layout
+ *
+ * @category  ClusterifyAI
+ * @package   ClusterifyAI_ChatBot
+ * @author    Clusterify AI <support@clusterify.ai>
+ * @copyright Copyright (c) 2026 Clusterify AI (https://clusterify.ai)
+ * @license   MIT License
+ */
+-->
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <update handle="styles"/>
+    <body>
+        <referenceContainer name="content">
+            <block class="ClusterifyAI\ChatBot\Block\Adminhtml\Info\Guide"
+                   name="clusterify.chatbot.info.guide"
+                   template="ClusterifyAI_ChatBot::info/guide.phtml" />
+        </referenceContainer>
+    </body>
+</page>
