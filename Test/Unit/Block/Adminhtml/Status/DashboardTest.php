@@ -253,4 +253,43 @@ class DashboardTest extends TestCase
         $this->assertSame(0, $list[0]['message_count']);
         $this->assertFalse($list[0]['is_available']);
     }
+
+    /**
+     * Test getInfoUrl returns correct path.
+     *
+     * @return void
+     */
+    public function testGetInfoUrl(): void
+    {
+        $urlBuilderMock = $this->createMock(\Magento\Framework\UrlInterface::class);
+        $urlBuilderMock->expects($this->once())
+            ->method('getUrl')
+            ->with('clusterify_chatbot/info/index')
+            ->willReturn('http://magento.test/admin/info');
+
+        $contextStub = $this->createStub(Context::class);
+        $contextStub->method('getUrlBuilder')->willReturn($urlBuilderMock);
+
+        $jsonHelperStub = $this->createStub(JsonHelper::class);
+        $directoryHelperStub = $this->createStub(DirectoryHelper::class);
+        $amqpConfigStub = $this->createStub(AmqpConfig::class);
+
+        $dashboard = new Dashboard(
+            $contextStub,
+            $this->planServiceStub,
+            $this->configStub,
+            $this->clientFactoryStub,
+            $this->indexerRegistryStub,
+            $this->pageVisibilityStub,
+            $this->cacheStub,
+            $this->timezoneStub,
+            $this->loggerMock,
+            $amqpConfigStub,
+            [],
+            $jsonHelperStub,
+            $directoryHelperStub
+        );
+
+        $this->assertSame('http://magento.test/admin/info', $dashboard->getInfoUrl());
+    }
 }

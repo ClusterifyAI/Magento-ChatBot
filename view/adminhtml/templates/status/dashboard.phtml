@@ -58,6 +58,9 @@ $queues = $block->getQueueStatusList();
             </div>
         </div>
         <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+            <a href="<?= $escaper->escapeUrl($block->getInfoUrl()) ?>" class="action-secondary" style="font-size: 12px; padding: 6px 14px;">
+                📘 <?= $escaper->escapeHtml(__('Important Information')) ?>
+            </a>
             <a href="<?= $escaper->escapeUrl($block->getConfigUrl()) ?>" class="action-secondary" style="font-size: 12px; padding: 6px 14px;">
                 <?= $escaper->escapeHtml(__('Configure Extension')) ?>
             </a>

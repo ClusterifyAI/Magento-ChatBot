@@ -427,6 +427,16 @@ class Dashboard extends Template
     }
 
     /**
+     * Retrieve Important Information & Guide URL.
+     *
+     * @return string
+     */
+    public function getInfoUrl(): string
+    {
+        return $this->getUrl('clusterify_chatbot/info/index');
+    }
+
+    /**
      * Retrieve Index Management URL.
      *
      * @return string
