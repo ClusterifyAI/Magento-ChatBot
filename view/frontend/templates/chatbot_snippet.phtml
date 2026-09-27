@@ -21,7 +21,7 @@ if (!$block->canShowChatbot()) {
 (function () {
     window.__clusterify = window.__clusterify || {};
     window.__clusterify.public_uuid = <?= json_encode($block->getPublicUuid(), JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP) ?>;
-    window.__clusterify.host_system = "magento2";
+    window.__clusterify.host_system = <?= json_encode($block->getHostSystem(), JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP) ?>;
     var script = document.createElement("script");
     script.src = "<?= $escaper->escapeUrl($block->getBundleScriptUrl()) ?>";
     document.head.appendChild(script);
