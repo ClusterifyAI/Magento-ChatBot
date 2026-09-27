@@ -78,6 +78,7 @@ In the top-left corner, you can switch between **Default Config**, specific **We
   (function () {
       window.__clusterify = window.__clusterify || {};
       window.__clusterify.public_uuid = "YOUR_PUBLIC_UUID";
+      window.__clusterify.host_system = "magento2";
       var script = document.createElement("script");
       script.src = "https://api.clusterify.ai/static/clusterify-chatbot-react.bundle.min.js";
       document.head.appendChild(script);

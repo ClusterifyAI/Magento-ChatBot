@@ -56,6 +56,11 @@ class Config
     public const EXTENSION_VERSION = '1.0.0';
 
     /**
+     * Host system identifier
+     */
+    public const HOST_SYSTEM = 'magento2';
+
+    /**
      * Default bundle script URL
      */
     public const DEFAULT_BUNDLE_SCRIPT_URL = 'https://api.clusterify.ai/static/clusterify-chatbot-react.bundle.min.js';
@@ -404,6 +409,16 @@ class Config
     }
 
     /**
+     * Retrieve the host system identifier.
+     *
+     * @return string
+     */
+    public function getHostSystem(): string
+    {
+        return self::HOST_SYSTEM;
+    }
+
+    /**
      * Generate the embeddable HTML script tag snippet from the configured Public UUID.
      *
      * @param string|null $publicUuid Optional UUID override
@@ -419,6 +434,7 @@ class Config
             "(function () {\n" .
             "    window.__clusterify = window.__clusterify || {};\n" .
             "    window.__clusterify.public_uuid = " . json_encode($uuidString, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP) . ";\n" .
+            "    window.__clusterify.host_system = " . json_encode(self::HOST_SYSTEM) . ";\n" .
             "    var script = document.createElement(\"script\");\n" .
             "    script.src = " . json_encode(self::DEFAULT_BUNDLE_SCRIPT_URL, JSON_UNESCAPED_SLASHES) . ";\n" .
             "    document.head.appendChild(script);\n" .

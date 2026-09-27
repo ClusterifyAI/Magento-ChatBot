@@ -101,6 +101,16 @@ class ChatbotSnippet extends Template
     }
 
     /**
+     * Retrieve the host system identifier.
+     *
+     * @return string
+     */
+    public function getHostSystem(): string
+    {
+        return $this->config->getHostSystem();
+    }
+
+    /**
      * Render block HTML only when chatbot is permitted to display on this store view and page type.
      *
      * @return string

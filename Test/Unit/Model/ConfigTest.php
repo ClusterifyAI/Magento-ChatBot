@@ -149,7 +149,23 @@ class ConfigTest extends TestCase
         $snippet = $config->generateScriptSnippet($uuid);
 
         $this->assertStringContainsString('window.__clusterify.public_uuid = "11111111-2222-3333-4444-555555555555";', $snippet);
+        $this->assertStringContainsString('window.__clusterify.host_system = "magento2";', $snippet);
         $this->assertStringContainsString(Config::DEFAULT_BUNDLE_SCRIPT_URL, $snippet);
+    }
+
+    /**
+     * Test getHostSystem returns magento2.
+     *
+     * @return void
+     */
+    public function testGetHostSystem(): void
+    {
+        $scopeConfigStub = $this->createStub(ScopeConfigInterface::class);
+        $encryptorStub = $this->createStub(EncryptorInterface::class);
+        $storeManagerStub = $this->createStub(StoreManagerInterface::class);
+
+        $config = new Config($scopeConfigStub, $encryptorStub, $storeManagerStub);
+        $this->assertSame('magento2', $config->getHostSystem());
     }
 
     /**
