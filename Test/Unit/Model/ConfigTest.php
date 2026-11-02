@@ -233,4 +233,19 @@ class ConfigTest extends TestCase
         $config = new Config($scopeConfigMock, $this->createStub(EncryptorInterface::class), $storeManagerStub);
         $this->assertTrue($config->isCustomKnowledgeOnlySyncEnabled(1));
     }
+
+    /**
+     * Test getExtensionVersion returns version 1.1.0.
+     *
+     * @return void
+     */
+    public function testGetExtensionVersion(): void
+    {
+        $config = new Config(
+            $this->createStub(ScopeConfigInterface::class),
+            $this->createStub(EncryptorInterface::class),
+            $this->createStub(StoreManagerInterface::class)
+        );
+        $this->assertSame('1.1.0', $config->getExtensionVersion());
+    }
 }

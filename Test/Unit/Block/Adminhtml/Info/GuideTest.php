@@ -62,8 +62,8 @@ class GuideTest extends TestCase
      */
     public function testGetExtensionVersion(): void
     {
-        $this->configStub->method('getExtensionVersion')->willReturn('1.0.0');
-        $this->assertSame('1.0.0', $this->block->getExtensionVersion());
+        $this->configStub->method('getExtensionVersion')->willReturn('1.1.0');
+        $this->assertSame('1.1.0', $this->block->getExtensionVersion());
     }
 
     /**

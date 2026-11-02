@@ -1,11 +1,11 @@
 # Clusterify.AI ChatBot & Assistant for Magento 2
 
-[![Version](https://img.shields.io/badge/version-1.0.0-blue.svg)](composer.json)
+[![Version](https://img.shields.io/badge/version-1.1.0-blue.svg)](composer.json)
 [![Magento Open Source](https://img.shields.io/badge/Open_Source-2.4.4_--_2.4.9+-orange.svg?logo=magento&logoColor=white)](etc/module.xml)
 [![Adobe Commerce](https://img.shields.io/badge/Adobe_Commerce-Cloud_%26_On--Premise-red.svg?logo=adobe&logoColor=white)](CLOUD-COMPATIBILITY.md)
 [![PHP](https://img.shields.io/badge/php-8.2%20--%208.5-8892bf.svg)](composer.json)
-[![Tests](https://img.shields.io/badge/tests-148%20passed-brightgreen.svg?logo=php&logoColor=white)](Test/Unit/)
-[![Assertions](https://img.shields.io/badge/assertions-488%20verified-brightgreen.svg)](Test/Unit/)
+[![Tests](https://img.shields.io/badge/tests-149%20passed-brightgreen.svg?logo=php&logoColor=white)](Test/Unit/)
+[![Assertions](https://img.shields.io/badge/assertions-489%20verified-brightgreen.svg)](Test/Unit/)
 [![Test Quality](https://img.shields.io/badge/suite-100%25%20passing%20%C2%B7%200%20warnings-success.svg)](Test/Unit/)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](composer.json)
 
@@ -176,7 +176,7 @@ All programmatic communication with the Clusterify.AI platform is powered by the
 - **Repository**: [ClusterifyAI/php-clusterify-sdk](https://github.com/ClusterifyAI/php-clusterify-sdk)
 - **Standards**: Strictly typed PHP 8.2+, PSR-4, PSR-7, PSR-17, and PSR-18 compliance.
 - **Factory Architecture**: The extension provides `ClusterifyAI\ChatBot\Service\ClientFactory` to instantiate configured, retry-resilient `Clusterify\ClusterifyClient` objects with automatic scope resolution (Store View &gt; Website &gt; Default) and strict SSRF protocol and IP validation.
-- **Client Identification**: Every outgoing API request is dispatched with an explicit User-Agent (`ClusterifyAI_ChatBot/1.0.0 (Magento 2.4)`) for server-side telemetry and integration auditing.
+- **Client Identification**: Every outgoing API request is dispatched with an explicit User-Agent (`ClusterifyAI_ChatBot/1.1.0 (Magento 2.4)`) for server-side telemetry and integration auditing.
 - **Security & Parameter Redaction**: Secret Key parameters leverage PHP 8.2+ `#[SensitiveParameter]` attributes to prevent inadvertent credential leakage in stack traces, error reports, and logs. Credentials reject control characters (`\r`, `\n`, `\0`) to protect against HTTP header injection.
 - **Defensive Error Handling**: Incorporates typed SDK domain exceptions (`AuthenticationException`, `AuthorizationException`, `RateLimitExceededException`, `ServerException`, `DomainMismatchException`, `ContentLengthExceededException`, `ValidationException`), preserving upstream HTTP status codes and honoring `Retry-After` rate-limit backoffs.
 - **Cache Invalidation & Request Options**: Utilizes SDK `RequestOptions::noCache()` during connection tests, CLI diagnostics, and configuration changes, combined with Magento event observers (`admin_system_config_changed_section_clusterify_chatbot`) to ensure local and remote caches remain synchronized.
@@ -219,7 +219,7 @@ The extension is thoroughly validated by an automated PHPUnit 12 test suite ensu
 | **CLI Management Suite** | 27 | 90 | Full command coverage (`config:*`, `sync:*`, `test`, `consume`) across table and JSON modes, SensitiveParameter masking, and rate limits. |
 | **Admin UI & Controllers** | 29 | 85 | Status dashboard metrics, Important Information merchant guide, AJAX queue processing, and form modifiers. |
 | **Client Factory & Security** | 13 | 31 | HTTPS enforcement, private/loopback IP SSRF rejection, control character sanitization, and User-Agent configuration. |
-| **Total Test Suite** | **148 tests** | **488 assertions** | **100% Pass Rate (0 failures, 0 errors, 0 notices, 0 deprecations)** |
+| **Total Test Suite** | **149 tests** | **489 assertions** | **100% Pass Rate (0 failures, 0 errors, 0 notices, 0 deprecations)** |
 
 ### Running the Test Suite:
 ```bash
