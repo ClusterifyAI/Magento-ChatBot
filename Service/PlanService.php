@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace ClusterifyAI\ChatBot\Service;
 
 use Clusterify\DTO\Profile\PlanData;
+use Clusterify\Http\RequestOptions;
 use ClusterifyAI\ChatBot\Model\Config;
 use Exception;
 use Magento\Framework\App\CacheInterface;
@@ -32,6 +33,11 @@ class PlanService
      * Cache key prefix for plan metadata
      */
     public const CACHE_PREFIX = 'clusterify_plan_cache_';
+
+    /**
+     * Shared cache tag for Clusterify runtime metadata
+     */
+    public const CACHE_TAG = 'clusterify_chatbot';
 
     /**
      * Cache TTL in seconds (10 minutes)
@@ -58,43 +64,51 @@ class PlanService
     ) {}
 
     /**
-     * Retrieve subscription plan metadata for a given store scope.
+     * Retrieve subscription plan metadata for a given configuration scope.
      *
-     * @param int|null $storeId Store view ID
+     * @param int|string|null $storeId      Store view ID or scope code
+     * @param string          $scopeType    Scope type (store, website, default)
+     * @param bool            $forceRefresh Bypass local and upstream API caches via RequestOptions::noCache()
      * @return PlanData|null
      */
-    public function getPlanData(?int $storeId = null): ?PlanData
-    {
-        $pubKey = $this->config->getPublicKey($storeId, ScopeInterface::SCOPE_STORE);
-        $secKey = $this->config->getSecretKey($storeId, ScopeInterface::SCOPE_STORE);
+    public function getPlanData(
+        int|string|null $storeId = null,
+        string $scopeType = ScopeInterface::SCOPE_STORE,
+        bool $forceRefresh = false
+    ): ?PlanData {
+        $pubKey = $this->config->getPublicKey($storeId, $scopeType);
+        $secKey = $this->config->getSecretKey($storeId, $scopeType);
 
         if ($pubKey === '' || $secKey === '') {
             return null;
         }
 
-        $cacheKey = self::CACHE_PREFIX . (string) ($storeId ?? 0);
-        $cachedRaw = $this->cache->load($cacheKey);
+        $cacheKey = $this->buildCacheKey($storeId, $scopeType);
 
-        if ($cachedRaw !== false) {
-            $data = json_decode((string) $cachedRaw, true);
-            if (is_array($data)) {
-                return PlanData::fromArray($data);
+        if (!$forceRefresh) {
+            $cachedRaw = $this->cache->load($cacheKey);
+            if ($cachedRaw !== false) {
+                $data = json_decode((string) $cachedRaw, true);
+                if (is_array($data)) {
+                    return PlanData::fromArray($data);
+                }
             }
         }
 
         try {
             $client = $this->clientFactory->create(
                 scopeCode: $storeId,
-                scopeType: ScopeInterface::SCOPE_STORE
+                scopeType: $scopeType
             );
 
-            $profileResponse = $client->profile()->get();
+            $options = $forceRefresh ? RequestOptions::noCache() : null;
+            $profileResponse = $client->profile()->get($options);
             $plan = $profileResponse->plan;
 
             $this->cache->save(
                 (string) json_encode($plan->toArray()),
                 $cacheKey,
-                ['clusterify_chatbot'],
+                [self::CACHE_TAG],
                 self::CACHE_TTL
             );
 
@@ -108,24 +122,30 @@ class PlanService
     /**
      * Retrieve the subscription plan ID (e.g. 1 = Starter, 2 = Professional).
      *
-     * @param int|null $storeId Store view ID
+     * @param int|string|null $storeId   Store view ID or scope code
+     * @param string          $scopeType Scope type
      * @return int
      */
-    public function getPlanId(?int $storeId = null): int
-    {
-        $plan = $this->getPlanData($storeId);
+    public function getPlanId(
+        int|string|null $storeId = null,
+        string $scopeType = ScopeInterface::SCOPE_STORE
+    ): int {
+        $plan = $this->getPlanData($storeId, $scopeType);
         return $plan !== null ? (int) $plan->id : self::PLAN_ID_STARTER;
     }
 
     /**
      * Retrieve human-readable plan name.
      *
-     * @param int|null $storeId Store view ID
+     * @param int|string|null $storeId   Store view ID or scope code
+     * @param string          $scopeType Scope type
      * @return string
      */
-    public function getPlanName(?int $storeId = null): string
-    {
-        $plan = $this->getPlanData($storeId);
+    public function getPlanName(
+        int|string|null $storeId = null,
+        string $scopeType = ScopeInterface::SCOPE_STORE
+    ): string {
+        $plan = $this->getPlanData($storeId, $scopeType);
         return $plan !== null ? (string) $plan->name : 'STARTER Plan';
     }
 
@@ -169,19 +189,22 @@ class PlanService
         }
 
         // 5. Subscription plan check (only reached if all 4 local checks pass)
-        return $this->isUrlKnowledgeAllowed($storeId);
+        return $this->isUrlKnowledgeAllowed($storeId, ScopeInterface::SCOPE_STORE);
     }
 
     /**
      * Check if the subscription plan permits URL-Based Knowledge Base synchronization.
      * Must be Professional or higher (plan_id >= 2).
      *
-     * @param int|null $storeId Store view ID
+     * @param int|string|null $storeId   Store view ID or scope code
+     * @param string          $scopeType Scope type
      * @return bool
      */
-    public function isUrlKnowledgeAllowed(?int $storeId = null): bool
-    {
-        $plan = $this->getPlanData($storeId);
+    public function isUrlKnowledgeAllowed(
+        int|string|null $storeId = null,
+        string $scopeType = ScopeInterface::SCOPE_STORE
+    ): bool {
+        $plan = $this->getPlanData($storeId, $scopeType);
         if ($plan === null) {
             return false;
         }
@@ -195,7 +218,7 @@ class PlanService
     }
 
     /**
-     * Clear cached plan metadata for a specific store or all stores.
+     * Clear cached plan metadata for a specific store or all scopes.
      *
      * @param int|null $storeId
      * @return void
@@ -205,7 +228,23 @@ class PlanService
         if ($storeId !== null) {
             $this->cache->remove(self::CACHE_PREFIX . $storeId);
         } else {
-            $this->cache->clean(['clusterify_chatbot']);
+            $this->cache->clean([self::CACHE_TAG]);
         }
+    }
+
+    /**
+     * Build deterministic cache key per configuration scope.
+     *
+     * @param int|string|null $scopeCode
+     * @param string          $scopeType
+     * @return string
+     */
+    private function buildCacheKey(int|string|null $scopeCode, string $scopeType): string
+    {
+        if ($scopeType === ScopeInterface::SCOPE_STORE) {
+            return self::CACHE_PREFIX . (string) ($scopeCode ?? 0);
+        }
+
+        return self::CACHE_PREFIX . preg_replace('/[^a-zA-Z0-9_]/', '_', $scopeType . '_' . (string) ($scopeCode ?? 'default'));
     }
 }

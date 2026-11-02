@@ -20,8 +20,8 @@ if (!$block->canShowChatbot()) {
 <script id="clusterify-chatbot-script">
 (function () {
     window.__clusterify = window.__clusterify || {};
-    window.__clusterify.public_uuid = <?= json_encode($block->getPublicUuid(), JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP) ?>;
-    window.__clusterify.host_system = <?= json_encode($block->getHostSystem(), JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP) ?>;
+    window.__clusterify.public_uuid = <?= /* @noEscape */ json_encode($block->getPublicUuid(), JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP) ?>;
+    window.__clusterify.host_system = <?= /* @noEscape */ json_encode($block->getHostSystem(), JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP) ?>;
     var script = document.createElement("script");
     script.src = "<?= $escaper->escapeUrl($block->getBundleScriptUrl()) ?>";
     document.head.appendChild(script);

@@ -15,6 +15,7 @@ namespace ClusterifyAI\ChatBot\Console\Command;
 
 use ClusterifyAI\ChatBot\Model\Config;
 use ClusterifyAI\ChatBot\Service\ClientFactory;
+use ClusterifyAI\ChatBot\Service\PlanService;
 use InvalidArgumentException;
 use Magento\Framework\App\Cache\TypeListInterface;
 use Magento\Framework\App\Config\ScopeConfigInterface;
@@ -23,6 +24,7 @@ use Magento\Framework\Console\Cli;
 use Magento\Framework\Encryption\EncryptorInterface;
 use Magento\Store\Model\ScopeInterface;
 use Magento\Store\Model\StoreManagerInterface;
+use SensitiveParameter;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -159,6 +161,7 @@ class ConfigSetCommand extends Command
      * @param StoreManagerInterface $storeManager    Store manager for resolving scopes
      * @param ClientFactory         $clientFactory   Client factory for URL validation
      * @param string|null           $name            Command name
+     * @param PlanService|null      $planService     Optional plan cache manager
      */
     public function __construct(
         private readonly WriterInterface $configWriter,
@@ -166,7 +169,8 @@ class ConfigSetCommand extends Command
         private readonly TypeListInterface $cacheTypeList,
         private readonly StoreManagerInterface $storeManager,
         private readonly ClientFactory $clientFactory,
-        ?string $name = null
+        ?string $name = null,
+        private readonly ?PlanService $planService = null
     ) {
         parent::__construct($name);
     }
@@ -253,7 +257,8 @@ class ConfigSetCommand extends Command
 
             $this->configWriter->save($path, $sanitizedValue, $scopeType, $scopeId);
 
-            // Invalidate config and full-page caches
+            // Invalidate config, plan/quota metadata, and full-page caches
+            $this->planService?->clearPlanCache();
             $this->cacheTypeList->cleanType('config');
             $this->cacheTypeList->cleanType('full_page');
             $this->cacheTypeList->cleanType('block_html');
@@ -281,7 +286,7 @@ class ConfigSetCommand extends Command
      * @return array{0: string, 1: string, 2: string} [configPath, valueToSave, displayValue]
      * @throws InvalidArgumentException
      */
-    private function processFieldValue(string $field, string $value): array
+    private function processFieldValue(string $field, #[SensitiveParameter] string $value): array
     {
         switch ($field) {
             case self::FIELD_ENABLED:

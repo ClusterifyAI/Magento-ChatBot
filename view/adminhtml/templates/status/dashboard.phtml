@@ -182,7 +182,15 @@ $queues = $block->getQueueStatusList();
                 <?php endif; ?>
             </div>
             <div style="font-size: 11px; color: #64748b; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
-                <?= $escaper->escapeHtml(__('Endpoint: %1', parse_url($block->getApiBaseUrl(), PHP_URL_HOST) ?: $block->getApiBaseUrl())) ?>
+                <?php if ($hasCredentials && $planData !== null && isset($planData->restrictions)): ?>
+                    <?= $escaper->escapeHtml(__(
+                        'Rate limit: %1 req/min | %2 req/day',
+                        $planData->restrictions->apiCallsPerMinute,
+                        number_format($planData->restrictions->apiCallsPerDay)
+                    )) ?>
+                <?php else: ?>
+                    <?= $escaper->escapeHtml(__('Endpoint: %1', parse_url($block->getApiBaseUrl(), PHP_URL_HOST) ?: $block->getApiBaseUrl())) ?>
+                <?php endif; ?>
             </div>
         </div>
 
@@ -201,7 +209,16 @@ $queues = $block->getQueueStatusList();
                 <?php endif; ?>
             </div>
             <div style="font-size: 11px; color: #64748b;">
-                <?= $escaper->escapeHtml(__('Max length: 20,000 chars/URL')) ?>
+                <?php if ($quotaStats !== null): ?>
+                    <?= $escaper->escapeHtml(__(
+                        '%1 active, %2 disabled • Max %3 chars/URL',
+                        (int) $quotaStats->enabled,
+                        (int) $quotaStats->disabled,
+                        number_format((int) $quotaStats->maxContentLength)
+                    )) ?>
+                <?php else: ?>
+                    <?= $escaper->escapeHtml(__('Max length: 20,000 chars/URL')) ?>
+                <?php endif; ?>
             </div>
         </div>
 

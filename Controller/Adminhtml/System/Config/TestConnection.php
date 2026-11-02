@@ -18,8 +18,11 @@ use Clusterify\Exceptions\AuthorizationException;
 use Clusterify\Exceptions\ClusterifyException;
 use Clusterify\Exceptions\NetworkException;
 use Clusterify\Exceptions\RateLimitExceededException;
+use Clusterify\Exceptions\ServerException;
+use Clusterify\Http\RequestOptions;
 use ClusterifyAI\ChatBot\Model\Config;
 use ClusterifyAI\ChatBot\Service\ClientFactory;
+use ClusterifyAI\ChatBot\Service\PlanService;
 use Exception;
 use InvalidArgumentException;
 use Magento\Backend\App\Action;
@@ -45,9 +48,10 @@ class TestConnection extends Action implements HttpPostActionInterface
     public const ADMIN_RESOURCE = 'ClusterifyAI_ChatBot::config';
 
     /**
-     * Clusterify Dashboard API keys URL
+     * Clusterify Dashboard URLs
      */
     public const DASHBOARD_API_KEY_URL = 'https://dashboard.clusterify.ai/api-key';
+    public const DASHBOARD_URL = 'https://dashboard.clusterify.ai';
 
     /**
      * @param Context          $context           Backend action context
@@ -55,13 +59,15 @@ class TestConnection extends Action implements HttpPostActionInterface
      * @param ClientFactory    $clientFactory     Clusterify SDK client factory
      * @param Config           $config            Module configuration provider
      * @param LoggerInterface  $logger            System logger
+     * @param PlanService|null $planService       Optional plan cache manager
      */
     public function __construct(
         Context $context,
         private readonly JsonFactory $resultJsonFactory,
         private readonly ClientFactory $clientFactory,
         private readonly Config $config,
-        private readonly LoggerInterface $logger
+        private readonly LoggerInterface $logger,
+        private readonly ?PlanService $planService = null
     ) {
         parent::__construct($context);
     }
@@ -128,9 +134,11 @@ class TestConnection extends Action implements HttpPostActionInterface
                 scopeType: $scopeType
             );
 
-            $ping = $client->ping();
+            $ping = $client->ping(RequestOptions::noCache());
 
             if ($ping->success && $ping->authenticated) {
+                $this->planService?->clearPlanCache();
+
                 return $result->setData([
                     'success' => true,
                     'message' => (string) __(
@@ -154,28 +162,50 @@ class TestConnection extends Action implements HttpPostActionInterface
                 'message' => (string) __('Validation error: %1', $e->getMessage()),
             ]);
         } catch (AuthenticationException $e) {
+            $statusCode = $e->getStatusCode() ?? 401;
             return $result->setData([
                 'success' => false,
                 'message' => (string) __(
-                    'Authentication failed (401): Invalid API keys. Please verify your Public Key and Secret Key on the Clusterify.AI Dashboard.'
+                    'Authentication failed (%1): Invalid API keys. Please verify your Public Key and Secret Key on the Clusterify.AI Dashboard.',
+                    $statusCode
                 ),
                 'link_url' => self::DASHBOARD_API_KEY_URL,
                 'link_text' => (string) __('Open Clusterify.AI API Keys Page'),
             ]);
         } catch (AuthorizationException $e) {
+            $statusCode = $e->getStatusCode() ?? 403;
+            $errorCode = $e->getErrorCode() ?? 'API_KEY_DISABLED';
+
+            $message = match ($errorCode) {
+                'USER_DISABLED' => (string) __(
+                    'Access forbidden (%1): Your Clusterify.AI account is currently disabled or suspended.',
+                    $statusCode
+                ),
+                'USER_NOT_VERIFIED' => (string) __(
+                    'Access forbidden (%1): Your Clusterify.AI account email address has not been verified yet.',
+                    $statusCode
+                ),
+                default => (string) __(
+                    'Access forbidden (%1): Your API Key is currently disabled. Please enable it on the Clusterify.AI Dashboard.',
+                    $statusCode
+                ),
+            };
+
             return $result->setData([
                 'success' => false,
-                'message' => (string) __(
-                    'Access forbidden (403): Your API Key is currently disabled. Please enable it on the Clusterify.AI Dashboard.'
-                ),
-                'link_url' => self::DASHBOARD_API_KEY_URL,
-                'link_text' => (string) __('Open Clusterify.AI API Keys Page'),
+                'message' => $message,
+                'link_url' => $errorCode === 'API_KEY_DISABLED' ? self::DASHBOARD_API_KEY_URL : self::DASHBOARD_URL,
+                'link_text' => $errorCode === 'API_KEY_DISABLED'
+                    ? (string) __('Open Clusterify.AI API Keys Page')
+                    : (string) __('Open Clusterify.AI Dashboard'),
             ]);
         } catch (RateLimitExceededException $e) {
+            $statusCode = $e->getStatusCode() ?? 429;
             return $result->setData([
                 'success' => false,
                 'message' => (string) __(
-                    'API rate limit reached (429). Retry after %1 seconds.',
+                    'API rate limit reached (%1). Retry after %2 seconds.',
+                    $statusCode,
                     (int) ($e->getRetryAfter() ?? 60)
                 ),
             ]);
@@ -188,12 +218,23 @@ class TestConnection extends Action implements HttpPostActionInterface
                     $e->getMessage()
                 ),
             ]);
+        } catch (ServerException $e) {
+            $statusCode = $e->getStatusCode() ?? 500;
+            return $result->setData([
+                'success' => false,
+                'message' => (string) __(
+                    'Clusterify upstream server error (%1): %2',
+                    $statusCode,
+                    $e->getMessage()
+                ),
+            ]);
         } catch (ClusterifyException $e) {
+            $errorCode = $e->getErrorCode() ?? 'API_ERROR';
             return $result->setData([
                 'success' => false,
                 'message' => (string) __(
                     'Clusterify API Error [%1]: %2',
-                    $e->getErrorCode(),
+                    $errorCode,
                     $e->getMessage()
                 ),
             ]);

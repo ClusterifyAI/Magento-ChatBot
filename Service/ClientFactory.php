@@ -18,6 +18,7 @@ use Clusterify\Support\RetryPolicy;
 use ClusterifyAI\ChatBot\Model\Config;
 use InvalidArgumentException;
 use Magento\Store\Model\ScopeInterface;
+use SensitiveParameter;
 
 /**
  * Class ClientFactory
@@ -43,6 +44,12 @@ class ClientFactory
      */
     public function validateBaseUrl(string $url): string
     {
+        if (preg_match('/[\r\n\0]/', $url) === 1) {
+            throw new InvalidArgumentException(
+                (string) __('Invalid API Base URL: URL must not contain control characters.')
+            );
+        }
+
         $trimmed = rtrim(trim($url), '/');
         if ($trimmed === '') {
             return Config::DEFAULT_API_BASE_URL;
@@ -55,6 +62,18 @@ class ClientFactory
         }
 
         $parsed = parse_url($trimmed);
+        if (!is_array($parsed)) {
+            throw new InvalidArgumentException(
+                (string) __('Invalid API Base URL: Unable to parse URL components.')
+            );
+        }
+
+        if (isset($parsed['user']) || isset($parsed['pass'])) {
+            throw new InvalidArgumentException(
+                (string) __('Invalid API Base URL: Embedded credentials are not permitted in the URL.')
+            );
+        }
+
         $scheme = strtolower($parsed['scheme'] ?? '');
         $host = strtolower($parsed['host'] ?? '');
 
@@ -64,15 +83,17 @@ class ClientFactory
             );
         }
 
+        $loopbackHosts = ['localhost', '127.0.0.1', '[::1]', '::1'];
+
         // Enforce HTTPS for remote hosts. HTTP is only permitted for local loopback development.
-        if ($scheme === 'http' && !in_array($host, ['localhost', '127.0.0.1'], true)) {
+        if ($scheme === 'http' && !in_array($host, $loopbackHosts, true)) {
             throw new InvalidArgumentException(
                 (string) __('Insecure connection rejected: HTTPS is required for external Clusterify API endpoints.')
             );
         }
 
         // Disallow link-local cloud metadata (169.254.x.x), IPv6 link-local, and private network IP ranges for external hosts
-        if (!in_array($host, ['localhost', '127.0.0.1', '[::1]', '::1'], true)) {
+        if (!in_array($host, $loopbackHosts, true)) {
             $cleanHost = trim($host, '[]');
             $isIp = filter_var($cleanHost, FILTER_VALIDATE_IP) !== false;
             $ip = $isIp ? $cleanHost : gethostbyname($host);
@@ -92,23 +113,32 @@ class ClientFactory
     /**
      * Create an authenticated ClusterifyClient instance.
      *
-     * @param string|null          $publicKey  Optional Public Key override
-     * @param string|null          $secretKey  Optional Secret Key override
-     * @param string|null          $apiBaseUrl Optional Base URL override
-     * @param int|string|null      $scopeCode  Optional Store/Website code or ID
-     * @param string               $scopeType  Scope type (stores, websites, default)
+     * @param string|null     $publicKey  Optional Public Key override
+     * @param string|null     $secretKey  Optional Secret Key override
+     * @param string|null     $apiBaseUrl Optional Base URL override
+     * @param int|string|null $scopeCode  Optional Store/Website code or ID
+     * @param string          $scopeType  Scope type (stores, websites, default)
      * @return ClusterifyClient
      * @throws InvalidArgumentException When credentials or URL are invalid
      */
     public function create(
         ?string $publicKey = null,
-        ?string $secretKey = null,
+        #[SensitiveParameter] ?string $secretKey = null,
         ?string $apiBaseUrl = null,
         int|string|null $scopeCode = null,
         string $scopeType = ScopeInterface::SCOPE_STORE
     ): ClusterifyClient {
-        $pubKey = trim($publicKey ?? $this->config->getPublicKey($scopeCode, $scopeType));
-        $secKey = trim($secretKey ?? $this->config->getSecretKey($scopeCode, $scopeType));
+        $rawPubKey = $publicKey ?? $this->config->getPublicKey($scopeCode, $scopeType);
+        $rawSecKey = $secretKey ?? $this->config->getSecretKey($scopeCode, $scopeType);
+
+        if (preg_match('/[\r\n\0]/', $rawPubKey) === 1 || preg_match('/[\r\n\0]/', $rawSecKey) === 1) {
+            throw new InvalidArgumentException(
+                (string) __('Clusterify API credentials must not contain control characters.')
+            );
+        }
+
+        $pubKey = trim($rawPubKey);
+        $secKey = trim($rawSecKey);
         $baseUrl = trim($apiBaseUrl ?? $this->config->getApiBaseUrl($scopeCode, $scopeType));
 
         if ($pubKey === '') {
@@ -130,6 +160,7 @@ class ClientFactory
             ->withBaseUrl($validatedUrl)
             ->withTimeout(15000)
             ->withConnectTimeout(5000)
+            ->withUserAgent('ClusterifyAI_ChatBot/' . Config::EXTENSION_VERSION . ' (Magento 2.4)')
             ->withRetryPolicy(new RetryPolicy(maxRetries: 2))
             ->build();
     }

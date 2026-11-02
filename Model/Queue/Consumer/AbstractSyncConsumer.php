@@ -16,10 +16,14 @@ namespace ClusterifyAI\ChatBot\Model\Queue\Consumer;
 use Clusterify\ClusterifyClient;
 use Clusterify\Exceptions\AuthenticationException;
 use Clusterify\Exceptions\AuthorizationException;
+use Clusterify\Exceptions\ContentLengthExceededException;
+use Clusterify\Exceptions\DomainMismatchException;
 use Clusterify\Exceptions\ForbiddenPlanException;
 use Clusterify\Exceptions\NetworkException;
 use Clusterify\Exceptions\PlanLimitExceededException;
 use Clusterify\Exceptions\RateLimitExceededException;
+use Clusterify\Exceptions\ServerException;
+use Clusterify\Exceptions\ValidationException;
 use ClusterifyAI\ChatBot\Api\Data\SyncMessageInterface;
 use ClusterifyAI\ChatBot\Model\Config;
 use ClusterifyAI\ChatBot\Model\Sync\ProviderPool;
@@ -179,11 +183,40 @@ abstract class AbstractSyncConsumer
                 $e->getCurrentPlan()
             ));
             // Cache restriction for 1 hour to prevent 403 request storms across queue messages
-            $this->cache->save('1', $cacheKey, ['clusterify_chatbot'], 3600);
+            $this->cache->save('1', $cacheKey, [PlanService::CACHE_TAG], 3600);
         } catch (PlanLimitExceededException $e) {
             $this->logger->warning(sprintf('Clusterify URL Knowledge sync skipped: Plan URL limit exceeded (%s).', $e->getMessage()));
+        } catch (ContentLengthExceededException $e) {
+            $this->logger->warning(sprintf(
+                'Clusterify URL Knowledge sync skipped: Content length exceeded for entity %s #%d (%s).',
+                $entityType,
+                $entityId,
+                $e->getMessage()
+            ));
+        } catch (DomainMismatchException $e) {
+            $this->logger->warning(sprintf(
+                'Clusterify URL Knowledge sync failed: Domain mismatch for entity %s #%d (%s).',
+                $entityType,
+                $entityId,
+                $e->getMessage()
+            ));
         } catch (AuthenticationException|AuthorizationException $e) {
             $this->logger->error(sprintf('Clusterify API authentication error during sync: %s', $e->getMessage()));
+        } catch (ServerException $e) {
+            $this->logger->error(sprintf(
+                'Clusterify upstream server error (%d) during sync [Entity: %s #%d]: %s',
+                $e->getStatusCode() ?? 500,
+                $entityType,
+                $entityId,
+                $e->getMessage()
+            ));
+        } catch (ValidationException $e) {
+            $this->logger->error(sprintf(
+                'Clusterify validation error during sync [Entity: %s #%d]: %s',
+                $entityType,
+                $entityId,
+                $e->getMessage()
+            ));
         } catch (Throwable $e) {
             $this->logger->error(sprintf(
                 'Clusterify unexpected sync consumer error [Entity: %s #%d]: %s',
@@ -213,6 +246,10 @@ abstract class AbstractSyncConsumer
         } catch (NetworkException $e) {
             $this->logger->warning(sprintf('Clusterify network glitch (%s). Pausing 1s before retry.', $e->getMessage()));
             sleep(1);
+            $operation(); // Retry once
+        } catch (ServerException $e) {
+            $this->logger->warning(sprintf('Clusterify upstream server error (%s). Pausing 2s before retry.', $e->getMessage()));
+            sleep(2);
             $operation(); // Retry once
         }
     }

@@ -20,6 +20,7 @@ use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Framework\Console\Cli;
 use Magento\Store\Model\ScopeInterface;
 use Magento\Store\Model\StoreManagerInterface;
+use SensitiveParameter;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Input\InputInterface;
@@ -273,7 +274,7 @@ class ConfigShowCommand extends Command
      * @param bool   $showSecrets
      * @return string
      */
-    private function maskSecret(string $secretKey, bool $showSecrets): string
+    private function maskSecret(#[SensitiveParameter] string $secretKey, bool $showSecrets): string
     {
         if ($secretKey === '' || $showSecrets) {
             return $secretKey;

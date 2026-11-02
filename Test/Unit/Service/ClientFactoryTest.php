@@ -124,4 +124,87 @@ class ClientFactoryTest extends TestCase
 
         $this->factory->create('', 'sk_live_123');
     }
+
+    /**
+     * Test empty secret key throws exception.
+     *
+     * @return void
+     */
+    public function testCreateThrowsExceptionOnEmptySecretKey(): void
+    {
+        $this->configStub->method('getPublicKey')->willReturn('pk_live_123');
+        $this->configStub->method('getSecretKey')->willReturn('');
+
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Clusterify API Secret Key is required.');
+
+        $this->factory->create('pk_live_123', '');
+    }
+
+    /**
+     * Test control characters in public key throw exception.
+     *
+     * @return void
+     */
+    public function testCreateThrowsExceptionOnControlCharactersInPublicKey(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Clusterify API credentials must not contain control characters.');
+
+        $this->factory->create("pk_live\n123", 'sk_live_456');
+    }
+
+    /**
+     * Test control characters in secret key throw exception.
+     *
+     * @return void
+     */
+    public function testCreateThrowsExceptionOnControlCharactersInSecretKey(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Clusterify API credentials must not contain control characters.');
+
+        $this->factory->create('pk_live_123', "sk_live\r\n456");
+    }
+
+    /**
+     * Test base URL with embedded credentials throws exception.
+     *
+     * @return void
+     */
+    public function testValidateBaseUrlRejectsEmbeddedCredentials(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Embedded credentials are not permitted in the URL.');
+
+        $this->factory->validateBaseUrl('https://user:pass@api.clusterify.ai');
+    }
+
+    /**
+     * Test base URL with control characters throws exception.
+     *
+     * @return void
+     */
+    public function testValidateBaseUrlRejectsControlCharacters(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('URL must not contain control characters.');
+
+        $this->factory->validateBaseUrl("https://api.clusterify.ai\n/test");
+    }
+
+    /**
+     * Test create returns configured ClusterifyClient.
+     *
+     * @return void
+     */
+    public function testCreateReturnsConfiguredClient(): void
+    {
+        $this->configStub->method('getPublicKey')->willReturn('pk_live_valid123');
+        $this->configStub->method('getSecretKey')->willReturn('sk_live_valid456');
+        $this->configStub->method('getApiBaseUrl')->willReturn('https://api.clusterify.ai');
+
+        $client = $this->factory->create();
+        $this->assertInstanceOf(\Clusterify\ClusterifyClient::class, $client);
+    }
 }

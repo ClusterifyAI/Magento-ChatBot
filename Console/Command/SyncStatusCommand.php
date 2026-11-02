@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace ClusterifyAI\ChatBot\Console\Command;
 
 use Clusterify\Exceptions\ClusterifyException;
+use Clusterify\Http\RequestOptions;
 use ClusterifyAI\ChatBot\Model\Config;
 use ClusterifyAI\ChatBot\Model\Indexer\Category as CategoryIndexer;
 use ClusterifyAI\ChatBot\Model\Indexer\Cms as CmsIndexer;
@@ -139,19 +140,44 @@ class SyncStatusCommand extends Command
 
         // Fetch live Clusterify API stats if credentials are configured
         $quotaStats = 'Unable to check (Credentials not configured)';
+        $rateLimitsLabel = 'N/A';
         $jsonQuota = null;
 
         if ($this->config->getPublicKey() !== '' && $this->config->getSecretKey() !== '') {
             try {
                 $client = $this->clientFactory->create();
-                $stats = $client->knowledgeUrl()->stats();
-                $planName = $this->planService->getPlanName();
-                $quotaStats = sprintf('%d / %d URLs used (%s)', $stats->total, $stats->maxUrls, $planName);
+                $stats = $client->knowledgeUrl()->stats(RequestOptions::noCache());
+                $planData = $this->planService->getPlanData(forceRefresh: true);
+                $planName = $planData !== null ? $planData->name : $this->planService->getPlanName();
+
+                $quotaStats = sprintf(
+                    '%d / %d URLs used (%d enabled, %d disabled — %s)',
+                    $stats->total,
+                    $stats->maxUrls,
+                    $stats->enabled,
+                    $stats->disabled,
+                    $planName
+                );
+
                 $jsonQuota = [
                     'used_urls' => $stats->total,
+                    'enabled_urls' => $stats->enabled,
+                    'disabled_urls' => $stats->disabled,
                     'max_urls' => $stats->maxUrls,
+                    'max_content_length' => $stats->maxContentLength,
+                    'max_url_address_length' => $stats->maxUrlAddressLength,
                     'plan_name' => $planName,
                 ];
+
+                if ($planData !== null) {
+                    $rateLimitsLabel = sprintf(
+                        '%d req/min | %s req/day',
+                        $planData->restrictions->apiCallsPerMinute,
+                        number_format($planData->restrictions->apiCallsPerDay)
+                    );
+                    $jsonQuota['api_calls_per_minute'] = $planData->restrictions->apiCallsPerMinute;
+                    $jsonQuota['api_calls_per_day'] = $planData->restrictions->apiCallsPerDay;
+                }
             } catch (ClusterifyException $e) {
                 $quotaStats = sprintf('API Check Failed: %s', $e->getMessage());
             } catch (Exception $e) {
@@ -189,6 +215,7 @@ class SyncStatusCommand extends Command
             ['Product Pages Sync', $this->config->isProductSyncEnabled() ? '<info>Enabled</info>' : '<comment>Disabled</comment>'],
             ['Filter In-Stock Only', $this->config->isInStockOnlySyncEnabled() ? '<info>Yes</info>' : '<comment>No</comment>'],
             ['Clusterify API Quota', $quotaStats],
+            ['API Rate Limits', $rateLimitsLabel],
         ]);
         $settingsTable->render();
 

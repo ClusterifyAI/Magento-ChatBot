@@ -16,6 +16,7 @@ namespace ClusterifyAI\ChatBot\Test\Unit\Console\Command;
 use ClusterifyAI\ChatBot\Console\Command\ConfigSetCommand;
 use ClusterifyAI\ChatBot\Model\Config;
 use ClusterifyAI\ChatBot\Service\ClientFactory;
+use ClusterifyAI\ChatBot\Service\PlanService;
 use Magento\Framework\App\Cache\TypeListInterface;
 use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Framework\App\Config\Storage\WriterInterface;
@@ -208,5 +209,34 @@ class ConfigSetCommandTest extends TestCase
             'value' => '1',
         ]);
         $this->assertSame(Cli::RETURN_SUCCESS, $statusAvail);
+    }
+
+    /**
+     * Test plan service cache is cleared when plan service is injected.
+     *
+     * @return void
+     */
+    public function testExecuteClearsPlanCacheWhenPlanServiceProvided(): void
+    {
+        $planServiceMock = $this->createMock(PlanService::class);
+        $planServiceMock->expects($this->once())->method('clearPlanCache');
+
+        $command = new ConfigSetCommand(
+            $this->configWriterMock,
+            $this->encryptorStub,
+            $this->cacheTypeListMock,
+            $this->storeManagerStub,
+            $this->clientFactoryStub,
+            null,
+            $planServiceMock
+        );
+
+        $tester = new CommandTester($command);
+        $statusCode = $tester->execute([
+            'field' => 'enabled',
+            'value' => 'yes',
+        ]);
+
+        $this->assertSame(Cli::RETURN_SUCCESS, $statusCode);
     }
 }

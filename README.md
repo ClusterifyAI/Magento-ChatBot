@@ -4,8 +4,8 @@
 [![Magento Open Source](https://img.shields.io/badge/Open_Source-2.4.4_--_2.4.9+-orange.svg?logo=magento&logoColor=white)](etc/module.xml)
 [![Adobe Commerce](https://img.shields.io/badge/Adobe_Commerce-Cloud_%26_On--Premise-red.svg?logo=adobe&logoColor=white)](CLOUD-COMPATIBILITY.md)
 [![PHP](https://img.shields.io/badge/php-8.2%20--%208.5-8892bf.svg)](composer.json)
-[![Tests](https://img.shields.io/badge/tests-133%20passed-brightgreen.svg?logo=php&logoColor=white)](Test/Unit/)
-[![Assertions](https://img.shields.io/badge/assertions-451%20verified-brightgreen.svg)](Test/Unit/)
+[![Tests](https://img.shields.io/badge/tests-148%20passed-brightgreen.svg?logo=php&logoColor=white)](Test/Unit/)
+[![Assertions](https://img.shields.io/badge/assertions-488%20verified-brightgreen.svg)](Test/Unit/)
 [![Test Quality](https://img.shields.io/badge/suite-100%25%20passing%20%C2%B7%200%20warnings-success.svg)](Test/Unit/)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](composer.json)
 
@@ -110,9 +110,9 @@ In the top-left corner, you can switch between **Default Config**, specific **We
 *Required for merchants using the PROFESSIONAL Plan or higher to synchronize URL-based knowledge alongside your storewide **[Chatbot Knowledge Base](https://clusterify.ai/general-knowledge-base)**.*
 - **Informative Plan Notice**: Highlights that deep URL-based knowledge base synchronization requires a **PROFESSIONAL Plan** or higher, while **STARTER Plan** customers enjoy full management directly in the [Clusterify.AI Dashboard](https://dashboard.clusterify.ai).
 - **API Public Key**: Your `pk_live_...` credential from [Clusterify Dashboard &gt; API Keys](https://dashboard.clusterify.ai/api-key).
-- **API Secret Key**: Your `sk_live_...` credential (encrypted in database).
+- **API Secret Key**: Your `sk_live_...` credential (encrypted in database using `Magento\Config\Model\Config\Backend\Encrypted`).
 - **API Base URL**: Defaults to `https://api.clusterify.ai`.
-- **Test API Connection** Button: An interactive AJAX tool that validates your credentials against Clusterify's live healthcheck endpoint (`/v1/ping`) and provides immediate diagnostic feedback with direct dashboard recovery links if keys are inactive or invalid.
+- **Test API Connection** Button: An interactive AJAX tool that validates your credentials live against Clusterify's `/v1/ping` healthcheck endpoint using `RequestOptions::noCache()` to bypass local and upstream caching, with immediate diagnostic feedback, detailed HTTP status code inspection, and direct recovery links if keys are inactive or disabled.
 
 ---
 
@@ -156,23 +156,32 @@ The extension installs a dedicated **`clusterify_chatbot_knowledge`** attribute 
 
 In the Magento Admin Panel, click the **CHATBOT** primary sidebar menu item (featuring the prominent speech-bubble brand icon) and select **Dashboard & Status** (also accessible via *Marketing > Chatbot & Assistant > Dashboard & Status*) to monitor your **[Clusterify Assistant](https://clusterify.ai/ai-assistant)**, track real-time queue tasks, and access direct shortcuts to **[Chatbot Window Styling](https://clusterify.ai/chatbot/window-styling)** and rich **[ChatBot Visual components](https://clusterify.ai/chatbot/visual-components)**:
 - **Live Subscription & Plan Verification**: Displays real-time plan detection (`STARTER Plan`, `PROFESSIONAL Plan`) and dynamic upgrade callouts to the billing portal.
-- **Key Metrics Overview**: Real-time cards for Storefront Assistant status, API connection state, live URL Knowledge Base quota (`37 / 1,000 URLs`), and page type visibility coverage.
+- **Key Metrics Overview Cards**:
+  - **Storefront Assistant**: Real-time widget active status, presentation state, and ChatBot Public UUID.
+  - **API Authorization & Rate Limits**: Live connection health and active subscription rate limits (e.g. `120 req/min | 50,000 req/day`).
+  - **URL Knowledge Base Quota**: Live URL capacity metrics displaying total registered URLs, active/enabled vs. disabled counts, and dynamic max character limits per URL.
+  - **Storefront Page Appearance**: Dynamic page type coverage summary (Cart and Checkout pages securely blocked by default).
 - **Live RabbitMQ Queue Monitor**: Real-time backlog tracking across `CMS Pages Queue`, `Categories Queue`, and `Products Queue`, showing pending tasks and active worker counts.
 - **"⚡ Process Pending Tasks Now" Button**: An on-demand AJAX action button directly above the RabbitMQ table that drains up to 50 pending messages per queue and live-updates the counts on screen without requiring terminal access or page reload.
 - **Direct Portal Links (`Clusterify.AI`)**: Submenu links directly to your Cloud Dashboard, [Chatbot Window Styling](https://clusterify.ai/chatbot/window-styling), [ChatBot Visual components](https://clusterify.ai/chatbot/visual-components), and API Keys, each styled with an external link indicator icon (`↗`) and opening securely in a new browser tab.
-- **Terminal Reference Card**: Quick copy-paste commands for running indexers, the new `clusterify:chatbot:sync:consume` command, and daemon workers.
+- **Terminal Reference Card**: Quick copy-paste commands for running indexers, the `clusterify:chatbot:sync:consume` command, and daemon workers.
 
 ---
 
 ## 6. Technical Architecture & PHP SDK Integration
 
-### Official PHP SDK (`clusterify/chatbot-sdk`)
-All programmatic communication with the Clusterify.AI platform is powered by the official enterprise-grade PHP SDK, designed to feed structured e-commerce data into the **[Clusterify Chatbot](https://clusterify.ai/chatbot)** and **[Clusterify Assistant](https://clusterify.ai/ai-assistant)**:
-- **Package**: [`clusterify/chatbot-sdk`](https://packagist.org/packages/clusterify/chatbot-sdk)
+### Official PHP SDK (`clusterify/chatbot-sdk` v1.1.0+)
+All programmatic communication with the Clusterify.AI platform is powered by the official enterprise-grade PHP SDK (minimum required version: `^1.1.0`), designed to feed structured e-commerce data into the **[Clusterify Chatbot](https://clusterify.ai/chatbot)** and **[Clusterify Assistant](https://clusterify.ai/ai-assistant)**:
+- **Package**: [`clusterify/chatbot-sdk`](https://packagist.org/packages/clusterify/chatbot-sdk) (`^1.1.0`)
 - **Repository**: [ClusterifyAI/php-clusterify-sdk](https://github.com/ClusterifyAI/php-clusterify-sdk)
 - **Standards**: Strictly typed PHP 8.2+, PSR-4, PSR-7, PSR-17, and PSR-18 compliance.
 - **Factory Architecture**: The extension provides `ClusterifyAI\ChatBot\Service\ClientFactory` to instantiate configured, retry-resilient `Clusterify\ClusterifyClient` objects with automatic scope resolution (Store View &gt; Website &gt; Default) and strict SSRF protocol and IP validation.
-- **Strict Invariant**: Direct HTTP requests (`curl_*`, Guzzle client instantiation, `file_get_contents`) are strictly prohibited in favor of the SDK.
+- **Client Identification**: Every outgoing API request is dispatched with an explicit User-Agent (`ClusterifyAI_ChatBot/1.0.0 (Magento 2.4)`) for server-side telemetry and integration auditing.
+- **Security & Parameter Redaction**: Secret Key parameters leverage PHP 8.2+ `#[SensitiveParameter]` attributes to prevent inadvertent credential leakage in stack traces, error reports, and logs. Credentials reject control characters (`\r`, `\n`, `\0`) to protect against HTTP header injection.
+- **Defensive Error Handling**: Incorporates typed SDK domain exceptions (`AuthenticationException`, `AuthorizationException`, `RateLimitExceededException`, `ServerException`, `DomainMismatchException`, `ContentLengthExceededException`, `ValidationException`), preserving upstream HTTP status codes and honoring `Retry-After` rate-limit backoffs.
+- **Cache Invalidation & Request Options**: Utilizes SDK `RequestOptions::noCache()` during connection tests, CLI diagnostics, and configuration changes, combined with Magento event observers (`admin_system_config_changed_section_clusterify_chatbot`) to ensure local and remote caches remain synchronized.
+- **Content Security Policy (CSP)**: Ships with ready-to-use `etc/csp_whitelist.xml` declaring rules for `https://api.clusterify.ai` and `*.clusterify.ai` across `script-src`, `connect-src`, `style-src`, `img-src`, and `font-src`.
+- **Strict Invariant**: Direct HTTP requests (`curl_*`, raw Guzzle client instantiation, `file_get_contents`) are strictly prohibited in favor of the official SDK.
 
 ### Decoupled Knowledge Base Sync Pipeline (RabbitMQ &amp; Indexers)
 To guarantee zero database locking during flash sales, automated imports, or peak shopping hours:
@@ -206,10 +215,11 @@ The extension is thoroughly validated by an automated PHPUnit 12 test suite ensu
 | **Data Providers & Extraction** | 25 | 108 | CMS, Category, and Product Markdown generation, MSI stock resolution, configurable options, price/availability toggles, currency rate conversion, and 20k knowledge attributes. |
 | **Indexers & Mview Operations** | 17 | 56 | Positive ID deduplication, chunking (`BATCH_SIZE = 100`), store iteration, and plan verification short-circuiting. |
 | **Queue & Messaging Pipeline** | 20 | 69 | RabbitMQ publishing, non-positive ID validation, batch processing, connection resilience, and consumer dispatching. |
-| **Observers & Action Plugins** | 16 | 45 | Save commit events, mass attribute update interception, and store ID sanitization. |
-| **CLI Management Suite** | 26 | 88 | Full command coverage (`config:*`, `sync:*`, `test`, `consume`) across table and JSON modes. |
+| **Observers & Action Plugins** | 17 | 49 | Save commit events, admin config change cache purge, mass attribute update interception, and store ID sanitization. |
+| **CLI Management Suite** | 27 | 90 | Full command coverage (`config:*`, `sync:*`, `test`, `consume`) across table and JSON modes, SensitiveParameter masking, and rate limits. |
 | **Admin UI & Controllers** | 29 | 85 | Status dashboard metrics, Important Information merchant guide, AJAX queue processing, and form modifiers. |
-| **Total Test Suite** | **133 tests** | **451 assertions** | **100% Pass Rate (0 failures, 0 errors, 0 notices, 0 deprecations)** |
+| **Client Factory & Security** | 13 | 31 | HTTPS enforcement, private/loopback IP SSRF rejection, control character sanitization, and User-Agent configuration. |
+| **Total Test Suite** | **148 tests** | **488 assertions** | **100% Pass Rate (0 failures, 0 errors, 0 notices, 0 deprecations)** |
 
 ### Running the Test Suite:
 ```bash
@@ -223,8 +233,10 @@ vendor/bin/phpunit app/code/ClusterifyAI/ChatBot/Test/Unit/
 - **Magento Edition**: Magento Open Source or Adobe Commerce `2.4.4` through `2.4.9+`
 - **PHP Version**: `8.2`, `8.3`, `8.4`, or `8.5`
 - **Dependencies**:
-  - `magento/framework`: `*`
-  - `clusterify/chatbot-sdk`: `^1.0 || dev-main`
+  - `php`: `~8.2.0 || ~8.3.0 || ~8.4.0 || ~8.5.0`
+  - `ext-json`: `*`
+  - `magento/framework`: `^103.0`
+  - `clusterify/chatbot-sdk`: `^1.1.0`
 
 ---
 

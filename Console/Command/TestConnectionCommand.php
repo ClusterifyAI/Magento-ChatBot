@@ -18,6 +18,8 @@ use Clusterify\Exceptions\AuthorizationException;
 use Clusterify\Exceptions\ClusterifyException;
 use Clusterify\Exceptions\NetworkException;
 use Clusterify\Exceptions\RateLimitExceededException;
+use Clusterify\Exceptions\ServerException;
+use Clusterify\Http\RequestOptions;
 use ClusterifyAI\ChatBot\Model\Config;
 use ClusterifyAI\ChatBot\Service\ClientFactory;
 use Exception;
@@ -185,7 +187,7 @@ class TestConnectionCommand extends Command
                 scopeType: $scopeType
             );
 
-            $ping = $client->ping();
+            $ping = $client->ping(RequestOptions::noCache());
 
             if ($format === 'json') {
                 $payload = [
@@ -211,20 +213,54 @@ class TestConnectionCommand extends Command
 
             return Cli::RETURN_SUCCESS;
         } catch (AuthenticationException $e) {
-            $msg = 'Authentication failed (401): Invalid API keys. Please verify your Public Key and Secret Key on the Clusterify.AI Dashboard: ' . self::DASHBOARD_API_KEY_URL;
-            return $this->handleError($output, $format, 401, 'INVALID_API_KEYS', $msg);
+            $statusCode = $e->getStatusCode() ?? 401;
+            $errorCode = $e->getErrorCode() ?? 'INVALID_API_KEYS';
+            $msg = sprintf(
+                'Authentication failed (%d): Invalid API keys. Please verify your Public Key and Secret Key on the Clusterify.AI Dashboard: %s',
+                $statusCode,
+                self::DASHBOARD_API_KEY_URL
+            );
+            return $this->handleError($output, $format, $statusCode, $errorCode, $msg);
         } catch (AuthorizationException $e) {
-            $msg = 'Access forbidden (403): Your API Key is currently disabled. Please enable it on the Clusterify.AI Dashboard: ' . self::DASHBOARD_API_KEY_URL;
-            return $this->handleError($output, $format, 403, 'API_KEY_DISABLED', $msg);
+            $statusCode = $e->getStatusCode() ?? 403;
+            $errorCode = $e->getErrorCode() ?? 'API_KEY_DISABLED';
+            $msg = match ($errorCode) {
+                'USER_DISABLED' => sprintf(
+                    'Access forbidden (%d): Your Clusterify.AI account is currently disabled or suspended.',
+                    $statusCode
+                ),
+                'USER_NOT_VERIFIED' => sprintf(
+                    'Access forbidden (%d): Your Clusterify.AI account email address has not been verified yet.',
+                    $statusCode
+                ),
+                default => sprintf(
+                    'Access forbidden (%d): Your API Key is currently disabled. Please enable it on the Clusterify.AI Dashboard: %s',
+                    $statusCode,
+                    self::DASHBOARD_API_KEY_URL
+                ),
+            };
+            return $this->handleError($output, $format, $statusCode, $errorCode, $msg);
         } catch (RateLimitExceededException $e) {
-            $msg = sprintf('API rate limit reached (429). Retry after %d seconds.', $e->getRetryAfter() ?? 60);
-            return $this->handleError($output, $format, 429, 'RATE_LIMIT_EXCEEDED', $msg);
+            $statusCode = $e->getStatusCode() ?? 429;
+            $errorCode = $e->getErrorCode() ?? 'RATE_LIMIT_EXCEEDED';
+            $msg = sprintf('API rate limit reached (%d). Retry after %d seconds.', $statusCode, $e->getRetryAfter() ?? 60);
+            return $this->handleError($output, $format, $statusCode, $errorCode, $msg);
         } catch (NetworkException $e) {
+            $errorCode = $e->getErrorCode() ?? 'NETWORK_ERROR';
             $msg = sprintf('Network error: Unable to connect to Clusterify API endpoint. (%s)', $e->getMessage());
-            return $this->handleError($output, $format, 0, 'NETWORK_ERROR', $msg);
+            return $this->handleError($output, $format, 0, $errorCode, $msg);
+        } catch (ServerException $e) {
+            $statusCode = $e->getStatusCode() ?? 500;
+            $errorCode = $e->getErrorCode() ?? 'SERVER_ERROR';
+            $msg = sprintf('Clusterify upstream server error (%d) [%s]: %s', $statusCode, $errorCode, $e->getMessage());
+            return $this->handleError($output, $format, $statusCode, $errorCode, $msg);
         } catch (ClusterifyException $e) {
-            $msg = sprintf('Clusterify API Error [%s]: %s', $e->getErrorCode(), $e->getMessage());
-            return $this->handleError($output, $format, 500, $e->getErrorCode(), $msg);
+            $statusCode = $e->getStatusCode() ?? 500;
+            $errorCode = $e->getErrorCode() ?? 'API_ERROR';
+            $msg = sprintf('Clusterify API Error [%s]: %s', $errorCode, $e->getMessage());
+            return $this->handleError($output, $format, $statusCode, $errorCode, $msg);
+        } catch (InvalidArgumentException $e) {
+            return $this->handleError($output, $format, 400, 'VALIDATION_ERROR', $e->getMessage());
         } catch (Exception $e) {
             return $this->handleError($output, $format, 500, 'ERROR', $e->getMessage());
         }

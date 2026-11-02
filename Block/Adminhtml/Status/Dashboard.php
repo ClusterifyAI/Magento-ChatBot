@@ -15,6 +15,7 @@ namespace ClusterifyAI\ChatBot\Block\Adminhtml\Status;
 
 use Clusterify\DTO\KnowledgeUrl\KnowledgeUrlStats;
 use Clusterify\DTO\Profile\PlanData;
+use Clusterify\Http\RequestOptions;
 use ClusterifyAI\ChatBot\Model\Config;
 use ClusterifyAI\ChatBot\Model\Indexer\Category as CategoryIndexer;
 use ClusterifyAI\ChatBot\Model\Indexer\Cms as CmsIndexer;
@@ -216,11 +217,12 @@ class Dashboard extends Template
     /**
      * Retrieve live or cached URL Knowledge Base usage quota statistics.
      *
+     * @param bool $forceRefresh Bypass local cache and query Clusterify API with nocache header
      * @return KnowledgeUrlStats|null
      */
-    public function getQuotaStats(): ?KnowledgeUrlStats
+    public function getQuotaStats(bool $forceRefresh = false): ?KnowledgeUrlStats
     {
-        if ($this->quotaStatsLoaded) {
+        if ($this->quotaStatsLoaded && !$forceRefresh) {
             return $this->cachedQuotaStats;
         }
 
@@ -232,13 +234,15 @@ class Dashboard extends Template
 
         $storeId = $this->getActiveStoreId();
         $cacheKey = self::QUOTA_CACHE_PREFIX . (string) ($storeId ?? 0);
-        $cached = $this->cache->load($cacheKey);
 
-        if ($cached !== false) {
-            $data = json_decode((string) $cached, true);
-            if (is_array($data)) {
-                $this->cachedQuotaStats = KnowledgeUrlStats::fromArray($data);
-                return $this->cachedQuotaStats;
+        if (!$forceRefresh) {
+            $cached = $this->cache->load($cacheKey);
+            if ($cached !== false) {
+                $data = json_decode((string) $cached, true);
+                if (is_array($data)) {
+                    $this->cachedQuotaStats = KnowledgeUrlStats::fromArray($data);
+                    return $this->cachedQuotaStats;
+                }
             }
         }
 
@@ -247,13 +251,14 @@ class Dashboard extends Template
                 scopeCode: $storeId,
                 scopeType: ScopeInterface::SCOPE_STORE
             );
-            $stats = $client->knowledgeUrl()->stats();
+            $options = $forceRefresh ? RequestOptions::noCache() : null;
+            $stats = $client->knowledgeUrl()->stats($options);
             $this->cachedQuotaStats = $stats;
 
             $this->cache->save(
                 (string) json_encode($stats->toArray()),
                 $cacheKey,
-                ['clusterify_chatbot'],
+                [PlanService::CACHE_TAG],
                 self::QUOTA_CACHE_TTL
             );
 

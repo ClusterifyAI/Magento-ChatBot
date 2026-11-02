@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+/**
+ * ClusterifyAI ChatBot Content Security Policy (CSP) whitelist
+ *
+ * @category  ClusterifyAI
+ * @package   ClusterifyAI_ChatBot
+ * @author    Clusterify AI <support@clusterify.ai>
+ * @copyright Copyright (c) 2026 Clusterify AI (https://clusterify.ai)
+ * @license   MIT License
+ */
+-->
+<csp_whitelist xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+               xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Csp:etc/csp_whitelist.xsd">
+    <policies>
+        <policy id="script-src">
+            <values>
+                <value id="clusterify_api" type="host">https://api.clusterify.ai</value>
+                <value id="clusterify_script_cdn" type="host">*.clusterify.ai</value>
+            </values>
+        </policy>
+        <policy id="connect-src">
+            <values>
+                <value id="clusterify_api" type="host">https://api.clusterify.ai</value>
+                <value id="clusterify_connect_cdn" type="host">*.clusterify.ai</value>
+            </values>
+        </policy>
+        <policy id="style-src">
+            <values>
+                <value id="clusterify_api" type="host">https://api.clusterify.ai</value>
+                <value id="clusterify_style_cdn" type="host">*.clusterify.ai</value>
+            </values>
+        </policy>
+        <policy id="img-src">
+            <values>
+                <value id="clusterify_api" type="host">https://api.clusterify.ai</value>
+                <value id="clusterify_cdn" type="host">*.clusterify.ai</value>
+            </values>
+        </policy>
+        <policy id="font-src">
+            <values>
+                <value id="clusterify_api" type="host">https://api.clusterify.ai</value>
+                <value id="clusterify_font_cdn" type="host">*.clusterify.ai</value>
+            </values>
+        </policy>
+    </policies>
+</csp_whitelist>
+
